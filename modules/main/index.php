@@ -12,7 +12,7 @@ if (isset($_SESSION['usuarioingresando'])) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Login | SmartRepair</title>
+    <title>SmartRepair</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../../assets/css/style.css">
@@ -25,7 +25,7 @@ if (isset($_SESSION['usuarioingresando'])) {
 
             <form method="POST" id="frmlogin" class="grupo-entradas" action="login.php">
                 <div class="Titulo"><div class="Titulo11">
-                    <h1>BIENVENIDO!</h1></div>
+                    <h1>BIENVENIDOS!</h1></div>
 
                     <div class="input-grupo">
                         <i class="fas fa-user icono"></i>
@@ -42,8 +42,8 @@ if (isset($_SESSION['usuarioingresando'])) {
                         <i class="fas fa-user-tag icono"></i>
                         <select name="txtrol" required class="CajaTexto" id="selectRol">
                             <option value="Administrador">Administrador</option>
-                            <option value="Profesional">Profesional</option>
-                            <option value="Académico">Académico</option>
+                            <option value="Técnico">Técnico</option>
+                            <option value="Operador">Operador</option>
                         </select>
                         <span class="custom-arrow">&#9662;</span> <!-- Flecha ▼ -->
                     </div>
