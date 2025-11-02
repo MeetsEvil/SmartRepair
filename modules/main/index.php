@@ -25,7 +25,7 @@ if (isset($_SESSION['usuarioingresando'])) {
 
             <form method="POST" id="frmlogin" class="grupo-entradas" action="login.php">
                 <div class="Titulo"><div class="Titulo11">
-                    <h1>BIENVENIDO!</h1></div>
+                    <h1>BIENVENIDOS!</h1></div>
 
                     <div class="input-grupo">
                         <i class="fas fa-user icono"></i>
