@@ -42,8 +42,8 @@ if (isset($_SESSION['usuarioingresando'])) {
                         <i class="fas fa-user-tag icono"></i>
                         <select name="txtrol" required class="CajaTexto" id="selectRol">
                             <option value="Administrador">Administrador</option>
-                            <option value="Profesional">Profesional</option>
-                            <option value="Académico">Académico</option>
+                            <option value="Técnico">Técnico</option>
+                            <option value="Operador">Operador</option>
                         </select>
                         <span class="custom-arrow">&#9662;</span> <!-- Flecha ▼ -->
                     </div>
