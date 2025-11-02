@@ -1,0 +1,199 @@
+body {
+    background: #f2f2f2;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex; /* Usamos flexbox para posicionar el contenido */
+    
+    /* CORRECCIÓN: Estilos del fondo para que cubra el 100% de la página */
+    background: url(../../assets/images/mattel_logo.png) no-repeat center center fixed;
+    background-size: cover; /* Cubre toda la ventana */
+    background-attachment: fixed;
+}
+
+h1 {
+    color: black;
+    margin-top: 25px;
+    text-align: center;
+    font-size: 2.5em; /* Un poco más grande para el título */
+}
+.Titulo{
+    margin-bottom: 8%;
+}
+/* --- Login --- */
+.FormCajaLogin {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    margin-right: 10%;
+    justify-content: flex-end; /* Empuja el formulario a la derecha */
+    align-items: center; /* Centra el formulario verticalmente */
+    box-sizing: border-box;
+    padding-right: 10%; /* Añade un pequeño margen a la derecha de toda la caja de login */
+}
+
+.FormLogin {
+    background-color: rgb(238, 234, 234); /* Fondo de la caja es blanco */
+    border-radius: 15px; /* Bordes redondeados */
+    color: #000;
+    padding-right: 20px;
+    border: 1px solid #ddd; /* Borde más suave */
+    width: 450px; 
+    height: 550px; 
+    position: relative;
+    padding: 20px; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra para que se destaque */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Eliminamos los márgenes de posicionamiento que causaban problemas */
+    margin: 0; 
+}
+
+/* Movimiento suave al pasar el cursor */
+.FormLogin {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.FormLogin:hover {
+    transform: translateY(-10px); /* Se mueve hacia arriba 10px */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Sombra más profunda */
+}
+
+.Titulo11{
+    margin-bottom: 15px;
+    margin-left: 8%;
+    padding:20px
+}
+.grupo-entradas {
+    position: relative; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0 10%; /* Padding lateral para centrar los inputs */
+    box-sizing: border-box;
+    transition: none; 
+    margin-right: 43px;
+}
+
+/* Estilos de íconos y campos de texto */
+.input-grupo {
+    position: relative;
+    width: 120%;
+    margin-bottom: 25px;
+}
+
+.input-grupo .icono {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ce2c2c; 
+    font-size: 1.2em;
+    z-index: 10;
+}
+
+.BtnLogin {
+    width: 100%;
+    text-decoration: none;
+    text-align: center;
+    padding: 14px 35px;
+    cursor: pointer;
+    border: 2px solid #ce2c2c;
+    width: 200px;
+    border-radius: 25px;
+    font-size: 18px;
+    color: white;
+    background-color: #ce2c2c;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-left: 8%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.BtnLogin:hover {
+    background-color: #991d1d;
+}
+
+/* Estilos base: Aplica a INPUT y SELECT */
+.CajaTexto {
+    /* 1. Dimensiones y bordes originales */
+    width: 100%;
+    /* Ajuste de padding izquierdo para el ícono (45px) */
+    padding: 12px 12px 12px 45px; 
+    font-size: 1em;
+    margin: 0;
+    border-radius: 25px; 
+    border: 2px solid #ce2c2c; /* Borde verde oscuro */
+    box-sizing: border-box;
+    
+    /* 2. Color de fondo por defecto y texto cuando NO está lleno/seleccionado */
+    background-color: white; 
+    color: #494848; /* Color gris para el texto (cuando es placeholder) */
+    
+    /* Aseguramos que la flecha del select se vea bien */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Estilo para cuando el usuario hace clic en cualquier campo */
+.CajaTexto:focus {
+    border-color: #ce2c2c; 
+    outline: none; 
+}
+
+/* --- Lógica para el campo SELECT (Rol) --- */
+
+/* 1. Cuando el SELECT es VÁLIDO (se ha elegido un rol real) */
+.CajaTexto:valid {
+    background-color: #e8f5e9; /* Fondo verde claro */
+    color: black; /* Texto negro cuando se selecciona */
+}
+
+/* --- Lógica para campos INPUT (Usuario y Contraseña) --- */
+
+/* 2. Cuando el navegador AUTOCOMPLETA (solo funciona en inputs) */
+.CajaTexto:-webkit-autofill,
+.CajaTexto:-webkit-autofill:hover, 
+.CajaTexto:-webkit-autofill:focus {
+    /* Fondo verde claro aplicado */
+    -webkit-box-shadow: 0 0 0px 1000px #e8f5e9 inset !important; 
+    /* Texto se mantiene negro */
+    -webkit-text-fill-color: black !important; 
+    /* Borde se mantiene verde oscuro */
+    border-color: #ce2c2c !important; 
+}
+
+/* Ícono de ojo en el input contraseña */
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ce2c2c;
+    font-size: 1.2em;
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Contenedor para el select + flecha personalizada */
+.select-container {
+    position: relative;
+}
+
+/* Flecha ▼ personalizada */
+.custom-arrow {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* para que no bloquee clics */
+    font-size: 1em;
+    color: #ce2c2c;
+}
