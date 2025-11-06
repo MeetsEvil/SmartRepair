@@ -100,6 +100,43 @@ if (!isset($_SESSION['usuarioingresando'])) {
     </div>
 
 
+
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-btn" id="closeContact">&times;</span>
+                <h2>Información de Contacto</h2>
+            </div>
+            <div class="modal-body">
+                <h3><?php echo ''.$_SESSION["usuarioingresando"].'';?></h3>
+                <p></p>
+                <!-- <div class="socialMedia">
+                    <a class="socialIcon" href="https://github.com/MeetsEvil" target="_blank"><i class="fab fa-github"></i></a>
+                    <a class="socialIcon" href="https://www.linkedin.com/in/orlandojgarciap-17a612289/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a class="socialIcon" href="mailto:orlandojgarciap@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-btn">&times;</span>
+                <h2>Cerrar sesión</h2>
+            </div>
+            <div class="modal-body">
+                <p>¿Confirmas que deseas cerrar sesión?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelBtn" class="btn-cancel">Cancelar</button>
+                <a href="../main/logout.php" class="btn-confirm">Cerrar Sesión</a>
+            </div>
+        </div>
+    </div>
+
+
     <script src="../../assets/js/main.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
