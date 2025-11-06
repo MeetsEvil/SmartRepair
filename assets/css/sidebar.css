@@ -125,6 +125,13 @@ body {
   visibility: hidden;
 }
 
+/* Logo */
+.navigation.active ul .logo img{
+  width: 50px;
+  margin-left: 28px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Tooltip solo para sidebar minimizado */
 .navigation.active ul li a::after {
   content: attr(data-tooltip);
