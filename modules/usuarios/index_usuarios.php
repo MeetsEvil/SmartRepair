@@ -14,7 +14,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartRepair</title>
     <link rel="stylesheet" href="../../assets/css/sidebar.css"><!--  Barra lateral de submenus -->
-    <link rel="stylesheet" href="../../assets/css/usuarios.css"><!-- Estilo general del submenu de usuarios -->
+    <link rel="stylesheet" href="../../assets/css/usuarios.css"><!-- Estilo general del submenu -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
@@ -60,7 +60,11 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
 
     <!-- Agregar barra superior -->
-
+<div style="position:absolute; display:flex; width:100%; height:100%;">
+        <div style="margin: auto;">
+            <h1>USUARIOS</h1>
+        </div>
+    </div>
 
     <!-- Agregar info de tabla -->
 
