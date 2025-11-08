@@ -1,12 +1,3 @@
-<?php
-session_start();
-if (isset($_SESSION['usuarioingresando'])) {
-    // Redirige a dashboard si ya está logueado
-    header('Location: dashboard.php');
-    exit();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 

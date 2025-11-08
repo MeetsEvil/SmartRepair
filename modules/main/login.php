@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pass    = mysqli_real_escape_string($conexion, $_POST["txtpassword"]);
 
     // Consulta que ahora verifica los tres campos: usuario, contraseña y rol
-    $query = "SELECT * FROM usuarios WHERE BINARY usuario = '$usuario' AND BINARY contrasena = '$pass' ";
+    $query = "SELECT * FROM usuarios WHERE BINARY usuario = '$usuario' AND BINARY pass = '$pass' ";
     $resultado = mysqli_query($conexion, $query);
 
     if ($resultado && mysqli_num_rows($resultado) === 1) {

@@ -5,7 +5,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,7 +13,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartRepair</title>
     <link rel="stylesheet" href="../../assets/css/sidebar.css"><!--  Barra lateral de submenus -->
-    <link rel="stylesheet" href="../../assets/css/usuarios.css"><!-- Estilo general del submenu -->
+    <link rel="stylesheet" href="../../assets/css/dashboard.css"><!-- Estilo general del submenu -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -38,6 +37,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <?php
     // Obtiene el nombre del archivo de la URL
