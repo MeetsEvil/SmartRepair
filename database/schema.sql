@@ -295,9 +295,13 @@ INSERT INTO tipos_falla (nombre_tipo_falla, maquina_aplicable, descripcion) VALU
 ('Otro', 'General', 'Otro tipo de falla no especificada');
 
 -- Insertar usuario administrador por defecto
--- Contraseña: admin123 (hash MD5 para ejemplo, en producción usar password_hash de PHP)
+-- Contraseña: 123 (hash MD5 para ejemplo, en producción usar password_hash de PHP)
 INSERT INTO usuarios (nombre, apellido, email, usuario, password, id_rol, estado) VALUES
-('Administrador', 'Sistema', 'admin@mattel.com', 'admin', MD5('admin123'), 1, 'Activo');
+('Administrador', 'Sistema', 'admin@mattel.com', 'admin', MD5('123'), 1, 'Activo');
+INSERT INTO usuarios (nombre, apellido, email, usuario, password, id_rol, estado) VALUES
+('Técnico', 'Sistema', 'tecnico@mattel.com', 'tecnico', MD5('123'), 1, 'Activo');
+INSERT INTO usuarios (nombre, apellido, email, usuario, password, id_rol, estado) VALUES
+('Operario', 'Sistema', 'operario@mattel.com', 'operario', MD5('123'), 1, 'Activo');
 
 -- ============================================
 -- VISTAS ÚTILES
