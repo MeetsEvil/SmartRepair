@@ -25,7 +25,7 @@ body {
   padding: 0;
   height: 100vh;
   display: flex; /* Usamos flexbox para posicionar el contenido */
-  background-color: #e6ecdb;
+  background-color: #f5e7e7;
   background-size: cover; /* Cubre toda la ventana */
   background-attachment: fixed;
 }
@@ -695,6 +695,43 @@ body {
   }
 }
 
+/*aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa*/
+
+
+
+/* ================= Contenedor de la página de Usuarios ================= */
+.usuarios-container {
+  margin: 30px auto;
+  margin-top: 50px;
+  margin-left: 170px;
+  margin-right: 10px;
+  margin-bottom: 90px;
+  padding: 30px;
+  border: 1px solid #000; /* borde negro */
+  /* Degradado y bordes */
+  background: white;
+  border: 2px solid #adabab;
+  border-radius: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+
+  /* Dimensiones */
+  width: calc(95% - 200px);
+  min-height: 95px;
+  height: 740px;
+
+  /* Configuración del layout interno */
+  display: flex;
+  flex-direction: column; /* Cambiado para apilar los elementos verticalmente */
+  /* Aquí se elimina justify-content: center y align-items: center */
+}
+
+.usuarios-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ================= Estilos de los elementos internos ================= */
+
 /* Contenedor del título y botón "Nuevo" */
 .header-section {
   display: flex;
@@ -714,9 +751,148 @@ body {
     font-size: 3em; /* Lo hacemos un poco más grande */
     font-weight: 700; /* Negrita */
     
-    color: #8c1c1c; 
+    color: #4d0d0d; 
     
     margin-top: 40px;
     letter-spacing: 2px; /* Aumentamos el espaciado para un look premium */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+
+/* Título de las Secciones (Beneficiarios, Diagnósticos, etc.) */
+.section-title {
+    /* Mantenemos un tamaño grande, pero menor al título principal */
+    font-size: 2.3em; /* Ligeramente más pequeño que el .page-title (2.5em -> 2.3em) */
+    font-weight: 700;
+    color: #000000; /* Negro estándar para el título de la sección */
+    margin: 0;
+}
+
+
+.header-section .btn-regresar,
+a.btn-regresar {
+  background: linear-gradient(90deg, #ce2828, #720202) !important;
+  border: none;
+  color: white !important;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+}
+
+.header-section .btn-regresar:hover,
+a.btn-regresar:hover {
+  background: linear-gradient(90deg, #b52323, #5a0101) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.header-section .btn-regresar ion-icon,
+a.btn-regresar ion-icon {
+  color: white !important;
+  font-size: 1.4em;
+}
+
+
+#tablaUsuarios {
+  padding-top: 20px;
+  margin-top: 70px;
+  width: 100%;
+  border-collapse: collapse; /* quita espacios entre bordes */
+  margin-top: 30px;
+  font-family: Arial, sans-serif;
+  font-size: 0.95em;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#tablaUsuarios th,
+#tablaUsuarios td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+#tablaUsuarios th {
+  background-color: #932323;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+#tablaUsuarios tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+#tablaUsuarios tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+
+
+/* ================= BOTONES DE ACCIÓN - DEGRADADOS ================= */
+
+/* Botón Nuevo - Degradado Verde */
+.btn-new {
+  background: linear-gradient(90deg, #932323, #4d0d0d) !important;
+  border: none;
+  color: white !important;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+}
+
+.btn-new:hover {
+  background: linear-gradient(90deg, #7b1f1f, #430c0c) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-new ion-icon {
+  color: white !important;
+  font-size: 1.2em;
+}
+
+/* Botón Exportar - Degradado Azul */
+.exportar{
+  background: linear-gradient(90deg, #2196F3, #0D47A1) !important;
+  border: none;
+  color: white !important;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+}
+
+.exportar:hover {
+  background: linear-gradient(90deg, #1976D2, #0A3A7A) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.exportar ion-icon {
+  color: white !important;
+  font-size: 1.2em;
 }
