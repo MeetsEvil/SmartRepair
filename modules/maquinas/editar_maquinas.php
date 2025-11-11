@@ -5,17 +5,37 @@ if (!isset($_SESSION['usuarioingresando'])) {
     exit();
 }
 
-// Solo administradores pueden crear usuarios
-if ($_SESSION['rol'] !== 'Administrador') {
-    header("Location: index_usuarios.php");
+// Solo administradores y técnicos pueden editar máquinas
+if ($_SESSION['rol'] !== 'Administrador' && $_SESSION['rol'] !== 'Técnico') {
+    header("Location: index_maquinas.php");
     exit();
 }
 
 require_once '../../config/db.php';
 
-// Obtener catálogos para los dropdowns
-$roles = mysqli_query($conexion, "SELECT * FROM roles ORDER BY nombre_rol");
+// Obtener ID de la máquina
+$id_maquina = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if ($id_maquina <= 0) {
+    header("Location: index_maquinas.php");
+    exit();
+}
+
+// Consultar datos de la máquina
+$sql = "SELECT * FROM maquinas WHERE id_maquina = $id_maquina";
+$resultado = mysqli_query($conexion, $sql);
+
+if (!$resultado || mysqli_num_rows($resultado) == 0) {
+    $_SESSION['error'] = "Máquina no encontrada";
+    header("Location: index_maquinas.php");
+    exit();
+}
+
+$maquina = mysqli_fetch_assoc($resultado);
+
+// Obtener catálogos
 $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa' ORDER BY nombre_planta");
+$lineas = mysqli_query($conexion, "SELECT l.*, p.nombre_planta FROM lineas l INNER JOIN plantas p ON l.id_planta = p.id_planta WHERE l.estado = 'Activa' ORDER BY p.nombre_planta, l.nombre_linea");
 ?>
 
 <!DOCTYPE html>
@@ -24,13 +44,12 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Usuario - SmartRepair</title>
+    <title>Editar Máquina - SmartRepair</title>
     <link rel="stylesheet" href="../../assets/css/sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 
     <style>
-        /* ================= CONTENEDOR DEL FORMULARIO ================= */
         .form-container {
             margin: 30px auto;
             margin-top: 50px;
@@ -53,7 +72,6 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Header del formulario */
         .form-header {
             display: flex !important;
             justify-content: space-between !important;
@@ -70,31 +88,18 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
             margin: 0 !important;
         }
 
-        /* Formulario centrado */
         .form-content {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
-        }
-
-        /* Grid de dos columnas */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .form-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            width: 100%;
         }
 
         .form-row {
             display: grid;
-            grid-template-columns: 150px 1fr;
+            grid-template-columns: 200px 1fr;
             gap: 15px;
-            align-items: center;
+            margin-bottom: 20px;
+            align-items: start;
         }
 
         .form-label {
@@ -102,6 +107,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
             font-weight: 600;
             color: #333;
             font-size: 1em;
+            padding-top: 10px;
         }
 
         .form-label span.required {
@@ -110,52 +116,36 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
         }
 
         .form-input,
-        .form-select {
+        .form-select,
+        .form-textarea {
             width: 100%;
             padding: 10px 15px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 0.95em;
             transition: all 0.3s ease;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
         }
 
         .form-input:focus,
-        .form-select:focus {
+        .form-select:focus,
+        .form-textarea:focus {
             outline: none;
             border-color: #932323;
             box-shadow: 0 0 0 3px rgba(147, 35, 35, 0.1);
         }
 
         .form-input:hover,
-        .form-select:hover {
+        .form-select:hover,
+        .form-textarea:hover {
             border-color: #932323;
         }
 
-        /* Campo de contraseña con ojito */
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .password-wrapper input {
-            padding-right: 45px;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            cursor: pointer;
-            color: #666;
-            font-size: 1.3em;
-            transition: color 0.3s ease;
-        }
-
-        .toggle-password:hover {
-            color: #932323;
-        }
-
-        /* Botones */
         .form-actions {
             display: flex;
             justify-content: center;
@@ -202,7 +192,6 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
             transform: translateY(-2px);
         }
 
-        /* Modal de éxito */
         .modal {
             display: none;
             position: fixed;
@@ -257,23 +246,6 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
             margin: 10px 0;
             line-height: 1.6;
         }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .form-container {
-                left: 320px !important;
-                right: 20px !important;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-
-            .form-label {
-                text-align: left;
-            }
-        }
     </style>
 </head>
 
@@ -290,6 +262,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                     <img src="../../assets/images/logo_mattel.png" alt="logo">
                 </li>
 
+                <!-- DASHBOARD -->
                 <li class="<?php echo ($currentPage == 'dashboard.php') ? 'active' : ''; ?>">
                     <a href="../main/dashboard.php" data-tooltip="Inicio">
                         <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
@@ -297,7 +270,8 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                     </a>
                 </li>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol = "Operario"): ?>
+                    <!-- MÁQUINAS -->
                     <?php $maquinasPages = ['index_maquinas.php', 'crear_maquinas.php', 'editar_maquinas.php', 'ver_maquinas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $maquinasPages) ? 'active' : ''; ?>">
                         <a href="../maquinas/index_maquinas.php" data-tooltip="Máquinas">
@@ -305,7 +279,11 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                             <span class="title">Máquinas</span>
                         </a>
                     </li>
+                <?php endif; ?>
 
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
+
+                    <!-- LÍNEAS -->
                     <?php $lineasPages = ['index_lineas.php', 'crear_lineas.php', 'editar_lineas.php', 'ver_lineas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $lineasPages) ? 'active' : ''; ?>">
                         <a href="../lineas/index_lineas.php" data-tooltip="Líneas">
@@ -315,7 +293,8 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                     </li>
                 <?php endif; ?>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
+                    <!-- MANTENIMIENTO -->
                     <?php $mantenimientoPages = ['index_mantenimiento.php', 'crear_mantenimiento.php', 'editar_mantenimiento.php', 'ver_mantenimiento.php']; ?>
                     <li class="<?php echo in_array($currentPage, $mantenimientoPages) ? 'active' : ''; ?>">
                         <a href="../mantenimiento/index_mantenimiento.php" data-tooltip="Mantenimiento">
@@ -324,6 +303,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                         </a>
                     </li>
 
+                    <!-- TICKETS -->
                     <?php $ticketsPages = ['index_tickets.php', 'crear_tickets.php', 'editar_tickets.php', 'ver_tickets.php']; ?>
                     <li class="<?php echo in_array($currentPage, $ticketsPages) ? 'active' : ''; ?>">
                         <a href="../tickets/index_tickets.php" data-tooltip="Tickets">
@@ -334,6 +314,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                 <?php endif; ?>
 
                 <?php if ($rol == 'Administrador'): ?>
+                    <!-- USUARIOS -->
                     <?php $usuariosPages = ['index_usuarios.php', 'crear_usuarios.php', 'editar_usuarios.php', 'ver_usuarios.php']; ?>
                     <li class="<?php echo in_array($currentPage, $usuariosPages) ? 'active' : ''; ?>">
                         <a href="../usuarios/index_usuarios.php" data-tooltip="Usuarios">
@@ -343,6 +324,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                     </li>
                 <?php endif; ?>
 
+                <!-- CERRAR SESIÓN -->
                 <li>
                     <a href="#" onclick="showLogoutModal()" data-tooltip="Cerrar Sesión">
                         <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
@@ -351,6 +333,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                 </li>
             </ul>
         </div>
+
     </div>
 
     <div class="main">
@@ -372,135 +355,131 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
 
         <div class="form-container">
             <div class="form-header">
-                <h2 class="form-title">Crear Nuevo Usuario</h2>
-                <a href="index_usuarios.php" class="btn-cancel">
+                <h2 class="form-title">Editar Máquina</h2>
+                <a href="index_maquinas.php" class="btn-cancel">
                     <ion-icon name="arrow-back-outline"></ion-icon> Regresar
                 </a>
             </div>
 
-            <form id="formCrearUsuario" class="form-content" method="POST" action="procesar_crear_usuario.php">
-                <div class="form-grid">
-                    <!-- COLUMNA IZQUIERDA -->
-                    <div class="form-column">
-                        <!-- Nombre -->
-                        <div class="form-row">
-                            <label class="form-label" for="nombre">
-                                Nombre<span class="required">*</span>
-                            </label>
-                            <input type="text" id="nombre" name="nombre" class="form-input" required maxlength="100"
-                                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras">
-                        </div>
+            <form id="formEditarMaquina" class="form-content" method="POST" action="procesar_editar_maquina.php">
+                <input type="hidden" name="id_maquina" value="<?php echo $maquina['id_maquina']; ?>">
 
-                        <!-- Apellido -->
-                        <div class="form-row">
-                            <label class="form-label" for="apellido">
-                                Apellido<span class="required">*</span>
-                            </label>
-                            <input type="text" id="apellido" name="apellido" class="form-input" required maxlength="100"
-                                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras">
-                        </div>
+                <!-- Código de Máquina -->
+                <div class="form-row">
+                    <label class="form-label" for="codigo_maquina">
+                        Código de Máquina<span class="required">*</span>
+                    </label>
+                    <input type="text" id="codigo_maquina" name="codigo_maquina" class="form-input" required maxlength="50"
+                        value="<?php echo htmlspecialchars($maquina['codigo_maquina']); ?>">
+                </div>
 
-                        <!-- Usuario -->
-                        <div class="form-row">
-                            <label class="form-label" for="usuario">
-                                Usuario<span class="required">*</span>
-                            </label>
-                            <input type="text" id="usuario" name="usuario" class="form-input" required maxlength="50"
-                                pattern="[A-Za-z0-9_]+" title="Solo letras, números y guión bajo">
-                        </div>
+                <!-- Marca -->
+                <div class="form-row">
+                    <label class="form-label" for="marca">
+                        Marca<span class="required">*</span>
+                    </label>
+                    <input type="text" id="marca" name="marca" class="form-input" required maxlength="100"
+                        value="<?php echo htmlspecialchars($maquina['marca']); ?>">
+                </div>
 
-                        <!-- Contraseña -->
-                        <div class="form-row">
-                            <label class="form-label" for="password">
-                                Contraseña<span class="required">*</span>
-                            </label>
-                            <div class="password-wrapper">
-                                <input type="password" id="password" name="password" class="form-input" required minlength="6" maxlength="50">
-                                <ion-icon name="eye-outline" class="toggle-password" onclick="togglePassword('password')"></ion-icon>
-                            </div>
-                        </div>
+                <!-- Modelo -->
+                <div class="form-row">
+                    <label class="form-label" for="modelo">
+                        Modelo<span class="required">*</span>
+                    </label>
+                    <input type="text" id="modelo" name="modelo" class="form-input" required maxlength="100"
+                        value="<?php echo htmlspecialchars($maquina['modelo']); ?>">
+                </div>
 
+                <!-- Número de Serie -->
+                <div class="form-row">
+                    <label class="form-label" for="numero_serie">
+                        Número de Serie
+                    </label>
+                    <input type="text" id="numero_serie" name="numero_serie" class="form-input" maxlength="100"
+                        value="<?php echo htmlspecialchars($maquina['numero_serie']); ?>">
+                </div>
 
-                        <!-- Confirmar Contraseña -->
-                        <div class="form-row">
-                            <label class="form-label" for="password_confirm">
-                                Confirmar<span class="required">*</span>
-                            </label>
-                            <div class="password-wrapper">
-                                <input type="password" id="password_confirm" name="password_confirm" class="form-input" required minlength="6" maxlength="50">
-                                <ion-icon name="eye-outline" class="toggle-password" onclick="togglePassword('password_confirm')"></ion-icon>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Planta -->
+                <div class="form-row">
+                    <label class="form-label" for="id_planta">
+                        Planta<span class="required">*</span>
+                    </label>
+                    <select id="id_planta" name="id_planta" class="form-select" required onchange="filtrarLineas()">
+                        <option value="">Seleccione una planta</option>
+                        <?php 
+                        mysqli_data_seek($plantas, 0);
+                        while ($planta = mysqli_fetch_assoc($plantas)): ?>
+                            <option value="<?php echo $planta['id_planta']; ?>" 
+                                <?php echo ($planta['id_planta'] == $maquina['id_planta']) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($planta['nombre_planta']); ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
 
-                    <!-- COLUMNA DERECHA -->
-                    <div class="form-column">
-                        <!-- Email -->
-                        <div class="form-row">
-                            <label class="form-label" for="email">
-                                Correo<span class="required">*</span>
-                            </label>
-                            <input type="email" id="email" name="email" class="form-input" required maxlength="150">
-                        </div>
+                <!-- Línea -->
+                <div class="form-row">
+                    <label class="form-label" for="id_linea">
+                        Línea<span class="required">*</span>
+                    </label>
+                    <select id="id_linea" name="id_linea" class="form-select" required>
+                        <option value="">Seleccione una línea</option>
+                        <?php while ($linea = mysqli_fetch_assoc($lineas)): ?>
+                            <option value="<?php echo $linea['id_linea']; ?>" 
+                                data-planta="<?php echo $linea['id_planta']; ?>"
+                                <?php echo ($linea['id_linea'] == $maquina['id_linea']) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($linea['nombre_planta'] . ' - ' . $linea['nombre_linea']); ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
 
-                        <!-- Teléfono -->
-                        <div class="form-row">
-                            <label class="form-label" for="telefono">
-                                Teléfono
-                            </label>
-                            <input type="tel" id="telefono" name="telefono" class="form-input" minlength="10" maxlength="10" required pattern="[0-9]{10}"
-                            title="Solo números, guiones, paréntesis y espacios">
-                        </div>
+                <!-- Área -->
+                <div class="form-row">
+                    <label class="form-label" for="area">
+                        Área
+                    </label>
+                    <input type="text" id="area" name="area" class="form-input" maxlength="100"
+                        value="<?php echo htmlspecialchars($maquina['area']); ?>">
+                </div>
 
-                        <!-- Rol -->
-                        <div class="form-row">
-                            <label class="form-label" for="id_rol">
-                                Rol<span class="required">*</span>
-                            </label>
-                            <select id="id_rol" name="id_rol" class="form-select" required>
-                                <option value="">Seleccione un rol</option>
-                                <?php while ($rol_item = mysqli_fetch_assoc($roles)): ?>
-                                    <option value="<?php echo $rol_item['id_rol']; ?>">
-                                        <?php echo htmlspecialchars($rol_item['nombre_rol']); ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
+                <!-- Fecha de Instalación -->
+                <div class="form-row">
+                    <label class="form-label" for="fecha_instalacion">
+                        Fecha de Instalación
+                    </label>
+                    <input type="date" id="fecha_instalacion" name="fecha_instalacion" class="form-input"
+                        value="<?php echo $maquina['fecha_instalacion']; ?>">
+                </div>
 
-                        <!-- Planta -->
-                        <div class="form-row">
-                            <label class="form-label" for="id_planta">
-                                Planta
-                            </label>
-                            <select id="id_planta" name="id_planta" class="form-select">
-                                <option value="">Sin asignar</option>
-                                <?php while ($planta = mysqli_fetch_assoc($plantas)): ?>
-                                    <option value="<?php echo $planta['id_planta']; ?>">
-                                        <?php echo htmlspecialchars($planta['nombre_planta']); ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
+                <!-- Estado -->
+                <div class="form-row">
+                    <label class="form-label" for="estado">
+                        Estado<span class="required">*</span>
+                    </label>
+                    <select id="estado" name="estado" class="form-select" required>
+                        <option value="Activa" <?php echo ($maquina['estado'] == 'Activa') ? 'selected' : ''; ?>>Activa</option>
+                        <option value="Inactiva" <?php echo ($maquina['estado'] == 'Inactiva') ? 'selected' : ''; ?>>Inactiva</option>
+                        <option value="Mantenimiento" <?php echo ($maquina['estado'] == 'Mantenimiento') ? 'selected' : ''; ?>>Mantenimiento</option>
+                        <option value="Fuera de servicio" <?php echo ($maquina['estado'] == 'Fuera de servicio') ? 'selected' : ''; ?>>Fuera de servicio</option>
+                    </select>
+                </div>
 
-                        <!-- Estado -->
-                        <div class="form-row">
-                            <label class="form-label" for="estado">
-                                Estado<span class="required">*</span>
-                            </label>
-                            <select id="estado" name="estado" class="form-select" required>
-                                <option value="Activo" selected>Activo</option>
-                                <option value="Inactivo">Inactivo</option>
-                            </select>
-                        </div>
-                    </div>
+                <!-- Observaciones -->
+                <div class="form-row">
+                    <label class="form-label" for="observaciones">
+                        Observaciones
+                    </label>
+                    <textarea id="observaciones" name="observaciones" class="form-textarea"><?php echo htmlspecialchars($maquina['observaciones']); ?></textarea>
                 </div>
 
                 <!-- Botones de acción -->
                 <div class="form-actions">
                     <button type="submit" class="btn-submit">
-                        <ion-icon name="save-outline"></ion-icon> Guardar Usuario
+                        <ion-icon name="save-outline"></ion-icon> Actualizar Máquina
                     </button>
-                    <a href="index_usuarios.php" class="btn-cancel">
+                    <a href="index_maquinas.php" class="btn-cancel">
                         <ion-icon name="close-outline"></ion-icon> Cancelar
                     </a>
                 </div>
@@ -513,14 +492,13 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
         <div class="modal-content success">
             <div class="modal-body">
                 <ion-icon name="checkmark-circle-outline" class="success-icon"></ion-icon>
-                <h2 class="success-title">¡Registro Exitoso!</h2>
-                <p>El nuevo usuario ha sido guardado correctamente.</p>
-                <p>Serás redirigido a la lista de usuarios en 3 segundos.</p>
+                <h2 class="success-title">¡Actualización Exitosa!</h2>
+                <p>La máquina ha sido actualizada correctamente.</p>
+                <p>Serás redirigido a la lista de máquinas en 3 segundos.</p>
             </div>
         </div>
     </div>
 
-    <!-- Modal de cerrar sesión -->
     <div id="logoutModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -538,44 +516,44 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
     </div>
 
     <script>
-        // Función para mostrar/ocultar contraseña
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            const icon = field.nextElementSibling;
+        function filtrarLineas() {
+            const plantaId = document.getElementById('id_planta').value;
+            const lineaSelect = document.getElementById('id_linea');
+            const opciones = lineaSelect.getElementsByTagName('option');
 
-            if (field.type === 'password') {
-                field.type = 'text';
-                icon.setAttribute('name', 'eye-off-outline');
-            } else {
-                field.type = 'password';
-                icon.setAttribute('name', 'eye-outline');
+            for (let i = 1; i < opciones.length; i++) {
+                const opcion = opciones[i];
+                if (plantaId === '' || opcion.getAttribute('data-planta') === plantaId) {
+                    opcion.style.display = '';
+                } else {
+                    opcion.style.display = 'none';
+                }
+            }
+
+            // Reset línea si no pertenece a la planta seleccionada
+            if (lineaSelect.value) {
+                const selectedOption = lineaSelect.options[lineaSelect.selectedIndex];
+                if (selectedOption.getAttribute('data-planta') !== plantaId) {
+                    lineaSelect.value = '';
+                }
             }
         }
 
-        // Validación de contraseñas
-        document.getElementById('formCrearUsuario').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const password_confirm = document.getElementById('password_confirm').value;
-
-            if (password !== password_confirm) {
-                e.preventDefault();
-                alert('Las contraseñas no coinciden. Por favor, verifica.');
-                return false;
-            }
+        // Filtrar líneas al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            filtrarLineas();
         });
 
-        // Verificar si hay éxito en la sesión
         <?php if (isset($_SESSION['success']) && $_SESSION['success'] === true): ?>
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('successModal').style.display = 'flex';
                 setTimeout(function() {
-                    window.location.href = 'index_usuarios.php';
+                    window.location.href = 'index_maquinas.php';
                 }, 3000);
             });
             <?php unset($_SESSION['success']); ?>
         <?php endif; ?>
 
-        // Mostrar errores si existen
         <?php if (isset($_SESSION['error'])): ?>
             alert('<?php echo addslashes($_SESSION['error']); ?>');
             <?php unset($_SESSION['error']); ?>
