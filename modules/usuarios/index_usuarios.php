@@ -12,33 +12,21 @@ if (!isset($_SESSION['usuarioingresando'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartRepair</title>
-    <link rel="stylesheet" href="../../assets/css/sidebar.css"><!--  Barra lateral de submenus y estilos generales -->
+    <title>Líneas - SmartRepair</title>
+    <link rel="stylesheet" href="../../assets/css/sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-    <!-- Extensión Botones -->
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-
-    <!-- Dependencias para exportar -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-        rel="stylesheet">
-<<<<<<< Updated upstream
-=======
 
     <style>
         .usuarios-container {
@@ -164,6 +152,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
             transform: translateY(-2px) !important;
         }
 
+
         /* ================= TABLA ================= */
         #tablaUsuarios {
             width: 100% !important;
@@ -211,7 +200,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
         #tablaUsuarios tbody tr:nth-child(even):hover {
             background-color: #fff5f5 !important;
         }
-
         /* ================= PAGINACIÓN ================= */
         .dataTables_wrapper .dataTables_paginate {
             padding-top: 20px !important;
@@ -230,7 +218,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
             background: linear-gradient(90deg, rgba(224, 90, 90, 1), rgba(177, 20, 20, 1)) !important;
-            color: white !important;
             border: 2px solid rgba(177, 20, 20, 1) !important;
             transform: translateY(-2px) !important;
         }
@@ -274,7 +261,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
             }
         }
     </style>
->>>>>>> Stashed changes
 </head>
 
 <body>
@@ -384,26 +370,13 @@ if (!isset($_SESSION['usuarioingresando'])) {
             <div class="header-section">
                 <h2 class="section-title">Usuarios</h2>
                 <div style="display: flex; gap: 10px;">
-<<<<<<< Updated upstream
-                    <a href="exportar_completo.php"
-                        style="background: linear-gradient(90deg,rgba(224, 90, 90, 1),rgba(177, 20, 20, 1)); border: none; color: white; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 10px 20px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">
-
-
-                        <ion-icon name="download-outline"></ion-icon> Exportar Completo
-                    </a>
-=======
->>>>>>> Stashed changes
                     <a href="crear_usuarios.php" class="btn-new">
                         <ion-icon name="add-circle-outline"></ion-icon> Nuevo
                     </a>
                 </div>
             </div>
             <!-- Tabla HTML -->
-<<<<<<< Updated upstream
-            <table id="tablaUsuarios" class="tabla-usuarios" style="width:100%">
-=======
             <table id="tablaUsuarios" class="display" style="width:100%">
->>>>>>> Stashed changes
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -413,68 +386,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                         <th>Usuario</th>
                         <th>Teléfono</th>
                         <th>Rol</th>
-<<<<<<< Updated upstream
-                        <th>Fecha de creación</th>
-                    </tr>
-                </thead>
-            </table>
-
-            <!-- Script SOLO una vez
-            <script>
-                $('#tablaBeneficiarios').DataTable({
-                    "ajax": "get_beneficiarios.php",
-                    "columns": [{
-                            "data": "id_beneficiario"
-                        },
-                        {
-                            "data": "matricula"
-                        },
-                        {
-                            "data": "nombre_completo"
-                        },
-                        {
-                            "data": "edad"
-                        },
-                        {
-                            "data": "genero"
-                        },
-                        {
-                            "data": "tipo_apoyo"
-                        },
-                        {
-                            "data": "ultima_actualizacion"
-                        },
-                        {
-                            "data": "opciones"
-                        }
-                    ],
-                    "pageLength": 8, // <--- Aquí se define la paginación de 8 registros
-                    "lengthMenu": [8, 16, 32, 50], // opcional: menú para cambiar cantidad
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
-                    },
-                    dom: 'Bfrtip', // Activa los botones
-                    buttons: [{
-                            extend: 'copyHtml5',
-                            text: 'Copiar',
-                            className: 'btn btn-sm btn-secondary'
-                        },
-                        {
-                            extend: 'excelHtml5',
-                            text: 'Excel',
-                            className: 'btn btn-sm btn-success'
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            text: 'PDF',
-                            className: 'btn btn-sm btn-danger',
-                            orientation: 'landscape', // opcional
-                            pageSize: 'A4' // opcional
-                        }
-                    ]
-                });
-            </script> -->
-=======
                         <th>Planta</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -484,7 +395,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     <!-- Los datos se cargarán dinámicamente -->
                 </tbody>
             </table>
->>>>>>> Stashed changes
         </div>
     </div>
 

@@ -34,9 +34,7 @@
                         <!-- <i class="fas fa-eye toggle-password" id="togglePassword"></i> -->
                     </div>
 
-                    <div class="recuperarContraseña">
-                        <a href="recuperarContraseña.php">¿Olvidaste tu contraseña?</a>
-                    </div>
+                    
 
 
                 </div>
