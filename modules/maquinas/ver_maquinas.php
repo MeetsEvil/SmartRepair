@@ -26,6 +26,7 @@ $sql = "SELECT
             p.nombre_planta,
             l.nombre_linea,
             CONCAT(u.nombre, ' ', u.apellido) as creado_por,
+            COALESCE(m.imagen, 'imgMaquinas/no-maquina.png') as imagen,
             (SELECT COUNT(*) FROM mantenimientos mt WHERE mt.id_maquina = m.id_maquina) as total_mantenimientos,
             (SELECT COUNT(*) FROM tickets t WHERE t.id_maquina = m.id_maquina) as total_tickets,
             (SELECT COUNT(*) FROM tickets t WHERE t.id_maquina = m.id_maquina AND t.id_estado IN (1,2)) as tickets_activos
@@ -311,6 +312,39 @@ mysqli_close($conexion);
             color: #999;
         }
 
+        .machine-image-section {
+            margin-bottom: 30px;
+            text-align: center;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .machine-image-section h3 {
+            color: #932323;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .machine-image-container {
+            display: inline-block;
+            max-width: 500px;
+            width: 100%;
+            border: 3px solid #932323;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(147, 35, 35, 0.2);
+            background: white;
+        }
+
+        .machine-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            max-height: 400px;
+        }
+
         @media (max-width: 1200px) {
             .info-grid {
                 grid-template-columns: 1fr;
@@ -432,6 +466,19 @@ mysqli_close($conexion);
             </div>
 
             <div class="view-content">
+                <!-- Imagen de la Máquina -->
+                <div class="machine-image-section">
+                    <h3>
+                        <ion-icon name="camera-outline" style="vertical-align: middle;"></ion-icon>
+                        Fotografía de la Máquina
+                    </h3>
+                    <div class="machine-image-container">
+                        <img src="../../<?php echo htmlspecialchars($maquina['imagen']); ?>" 
+                             alt="Imagen de <?php echo htmlspecialchars($maquina['codigo_maquina']); ?>"
+                             onerror="this.src='../../imgMaquinas/no-maquina.png'">
+                    </div>
+                </div>
+
                 <div class="info-grid">
                     <!-- Información General -->
                     <div class="info-section">

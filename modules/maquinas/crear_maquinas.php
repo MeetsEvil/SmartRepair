@@ -341,7 +341,7 @@ $lineas = mysqli_query($conexion, "SELECT l.*, p.nombre_planta FROM lineas l INN
                 </a>
             </div>
 
-            <form id="formCrearMaquina" class="form-content" method="POST" action="procesar_crear_maquina.php">
+            <form id="formCrearMaquina" class="form-content" method="POST" action="procesar_crear_maquina.php" enctype="multipart/form-data">
                 <!-- Código de Máquina -->
                 <div class="form-row">
                     <label class="form-label" for="codigo_maquina">
@@ -423,6 +423,25 @@ $lineas = mysqli_query($conexion, "SELECT l.*, p.nombre_planta FROM lineas l INN
                         Fecha de Instalación
                     </label>
                     <input type="date" id="fecha_instalacion" name="fecha_instalacion" class="form-input">
+                </div>
+
+                <!-- Imagen de la Máquina -->
+                <div class="form-row">
+                    <label class="form-label" for="imagen">
+                        Fotografía
+                    </label>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <input type="file" id="imagen" name="imagen" class="form-input" 
+                               accept="image/png, image/jpeg, image/jpg, image/gif"
+                               onchange="previewImage(event)">
+                        <small style="color: #666; font-size: 0.85em;">
+                            Formatos: PNG, JPG, JPEG, GIF. Tamaño máximo: 5MB
+                        </small>
+                        <div id="imagePreview" style="display: none; margin-top: 10px;">
+                            <img id="preview" src="" alt="Vista previa" 
+                                 style="max-width: 300px; max-height: 200px; border: 2px solid #932323; border-radius: 8px;">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Observaciones -->
@@ -513,6 +532,42 @@ $lineas = mysqli_query($conexion, "SELECT l.*, p.nombre_planta FROM lineas l INN
             alert('<?php echo addslashes($_SESSION['error']); ?>');
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
+
+        // Previsualización de imagen
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
+
+            if (file) {
+                // Validar tamaño (5MB máximo)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('La imagen es demasiado grande. El tamaño máximo es 5MB.');
+                    event.target.value = '';
+                    previewContainer.style.display = 'none';
+                    return;
+                }
+
+                // Validar tipo de archivo
+                const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Formato de imagen no válido. Use PNG, JPG, JPEG o GIF.');
+                    event.target.value = '';
+                    previewContainer.style.display = 'none';
+                    return;
+                }
+
+                // Mostrar previsualización
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
     </script>
 
     <script src="../../assets/js/main.js"></script>

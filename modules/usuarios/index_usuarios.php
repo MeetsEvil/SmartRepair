@@ -46,6 +46,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
     $rol = $_SESSION['rol'];
     ?>
 
+
     <div class="container">
         <div class="navigation">
             <ul>
@@ -250,7 +251,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
             </div>
         </div>
     </div>
-    </div>
+    
 
 
     <div id="logoutModal" class="modal">
