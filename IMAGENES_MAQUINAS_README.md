@@ -125,6 +125,18 @@ Al crear una nueva máquina:
    - Se guarda la imagen con el nombre del ID (ej: `5.jpg`)
    - Se actualiza la base de datos con la ruta de la imagen
 
+### Editar Máquina Existente
+
+Al editar una máquina:
+1. Se muestra la imagen actual de la máquina
+2. Puedes seleccionar una nueva imagen para reemplazarla
+3. Verás una previsualización de la nueva imagen
+4. Al guardar:
+   - Se eliminan TODAS las versiones anteriores de la imagen (png, jpg, jpeg, gif)
+   - Se guarda la nueva imagen con el ID de la máquina
+   - Se actualiza la base de datos con la nueva ruta
+   - **Ejemplo**: Si tenías `5.png` y subes un JPG, se elimina `5.png` y se crea `5.jpg`
+
 ### Validaciones
 
 El sistema valida:
@@ -132,7 +144,7 @@ El sistema valida:
 - **Tamaño**: Máximo 5MB
 - **Previsualización**: Se muestra antes de guardar
 
-### Proceso Automático
+### Proceso Automático - Crear
 
 ```
 1. Usuario sube imagen → Validación
@@ -141,13 +153,36 @@ El sistema valida:
 4. Se actualiza BD → imagen = 'imgMaquinas/15.jpg'
 ```
 
+### Proceso Automático - Editar
+
+```
+1. Usuario selecciona nueva imagen → Validación
+2. Se eliminan versiones anteriores:
+   - imgMaquinas/15.png ❌
+   - imgMaquinas/15.jpg ❌
+   - imgMaquinas/15.jpeg ❌
+   - imgMaquinas/15.gif ❌
+3. Se guarda nueva imagen → imgMaquinas/15.jpg ✅
+4. Se actualiza BD → imagen = 'imgMaquinas/15.jpg'
+```
+
+## ✅ Funcionalidades Implementadas
+
+- ✅ Subida de imágenes al crear máquina
+- ✅ Edición de imágenes al editar máquina
+- ✅ Eliminación automática de imagen anterior al actualizar
+- ✅ Previsualización antes de guardar
+- ✅ Validación de formato y tamaño
+- ✅ Visualización de imagen en ver_maquinas.php
+- ✅ Imagen por defecto automática
+
 ## Próximas Funcionalidades
 
-En futuras actualizaciones se agregará:
-- Edición de imágenes desde el formulario de editar máquinas
-- Recorte y redimensionamiento automático
+En futuras actualizaciones se podría agregar:
+- Recorte y redimensionamiento automático de imágenes
 - Galería de imágenes múltiples por máquina
-- Eliminación de imagen anterior al actualizar
+- Compresión automática de imágenes grandes
+- Historial de imágenes anteriores
 
 ## Solución de Problemas
 

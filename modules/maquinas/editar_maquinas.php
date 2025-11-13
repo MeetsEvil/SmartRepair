@@ -361,7 +361,7 @@ $lineas = mysqli_query($conexion, "SELECT l.*, p.nombre_planta FROM lineas l INN
                 </a>
             </div>
 
-            <form id="formEditarMaquina" class="form-content" method="POST" action="procesar_editar_maquina.php">
+            <form id="formEditarMaquina" class="form-content" method="POST" action="procesar_editar_maquina.php" enctype="multipart/form-data">
                 <input type="hidden" name="id_maquina" value="<?php echo $maquina['id_maquina']; ?>">
 
                 <!-- Código de Máquina -->
@@ -451,6 +451,43 @@ $lineas = mysqli_query($conexion, "SELECT l.*, p.nombre_planta FROM lineas l INN
                     </label>
                     <input type="date" id="fecha_instalacion" name="fecha_instalacion" class="form-input"
                         value="<?php echo $maquina['fecha_instalacion']; ?>">
+                </div>
+
+                <!-- Imagen de la Máquina -->
+                <div class="form-row">
+                    <label class="form-label" for="imagen">
+                        Fotografía
+                    </label>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Imagen actual -->
+                        <div style="margin-bottom: 10px;">
+                            <strong style="color: #666; font-size: 0.9em;">Imagen actual:</strong>
+                            <div style="margin-top: 8px; border: 2px solid #ddd; border-radius: 8px; padding: 10px; display: inline-block;">
+                                <img src="../../<?php echo htmlspecialchars($maquina['imagen'] ?? 'imgMaquinas/no-maquina.png'); ?>" 
+                                     alt="Imagen actual" 
+                                     style="max-width: 200px; max-height: 150px; display: block;"
+                                     onerror="this.src='../../imgMaquinas/no-maquina.png'">
+                            </div>
+                        </div>
+                        
+                        <!-- Campo para nueva imagen -->
+                        <input type="file" id="imagen" name="imagen" class="form-input" 
+                               accept="image/png, image/jpeg, image/jpg, image/gif"
+                               onchange="previewImage(event)">
+                        <small style="color: #666; font-size: 0.85em;">
+                            Formatos: PNG, JPG, JPEG, GIF. Tamaño máximo: 5MB<br>
+                            <strong>Nota:</strong> Si subes una nueva imagen, reemplazará la actual.
+                        </small>
+                        
+                        <!-- Previsualización de nueva imagen -->
+                        <div id="imagePreview" style="display: none; margin-top: 10px;">
+                            <strong style="color: #932323; font-size: 0.9em;">Nueva imagen:</strong>
+                            <div style="margin-top: 8px; border: 2px solid #932323; border-radius: 8px; padding: 10px; display: inline-block;">
+                                <img id="preview" src="" alt="Vista previa" 
+                                     style="max-width: 200px; max-height: 150px; display: block;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Estado -->
@@ -558,6 +595,42 @@ $lineas = mysqli_query($conexion, "SELECT l.*, p.nombre_planta FROM lineas l INN
             alert('<?php echo addslashes($_SESSION['error']); ?>');
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
+
+        // Previsualización de imagen
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
+
+            if (file) {
+                // Validar tamaño (5MB máximo)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('La imagen es demasiado grande. El tamaño máximo es 5MB.');
+                    event.target.value = '';
+                    previewContainer.style.display = 'none';
+                    return;
+                }
+
+                // Validar tipo de archivo
+                const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Formato de imagen no válido. Use PNG, JPG, JPEG o GIF.');
+                    event.target.value = '';
+                    previewContainer.style.display = 'none';
+                    return;
+                }
+
+                // Mostrar previsualización
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
     </script>
 
     <script src="../../assets/js/main.js"></script>
