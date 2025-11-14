@@ -37,6 +37,263 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
         rel="stylesheet">
+    <style>
+        /* ================= Dashboard Container ================= */
+        .dashboard-container {
+            margin: 30px auto;
+            margin-top: 50px;
+            margin-left: 100px;
+            margin-bottom: 90px;
+            padding: 30px;
+            border: 1px solid #000;
+            /* Degradado y bordes */
+            background: white;
+            border: 2px solid #adabab;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+
+            /* Dimensiones */
+            width: calc(95% - 100px);
+            min-height: 95px;
+            height: 740px;
+
+            /* Configuración del layout interno */
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Header del Dashboard */
+        .dashboard-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            flex-shrink: 0;
+        }
+
+        .dashboard-title {
+            font-size: 2.3em;
+            font-weight: 700;
+            color: #000000;
+            margin: 0;
+        }
+
+        /* Grid de estadísticas - 2x2 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 30px;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Tarjeta individual de estadística */
+        .stat-card {
+            background: linear-gradient(135deg, #E63946 0%, #A4161A 100%);
+            border-radius: 15px;
+            padding: 40px 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Ícono de la tarjeta */
+        .stat-icon {
+            flex-shrink: 0;
+            width: 140px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-icon ion-icon {
+            width: 130px;
+            height: 130px;
+            color: rgba(255, 255, 255, 0.95);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            stroke-width: 1.5px;
+        }
+
+        /* Información de la estadística */
+        .stat-info {
+            flex: 1;
+            color: white;
+            text-align: right;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .stat-number {
+            font-size: 7em;
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 8px;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
+            letter-spacing: -3px;
+        }
+
+        .stat-label {
+            font-size: 1.6em;
+            font-weight: 700;
+            opacity: 0.98;
+            letter-spacing: 0.3px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+            max-width: 100%;
+        }
+
+        /* Responsive - Tablets y menores */
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                margin-left: 50px;
+                width: calc(95% - 50px);
+                padding: 35px;
+            }
+
+            .stats-grid {
+                gap: 20px;
+            }
+
+            .stat-card {
+                padding: 35px 30px;
+                min-height: 200px;
+            }
+
+            .stat-icon {
+                width: 90px;
+                height: 90px;
+            }
+
+            .stat-icon ion-icon {
+                width: 75px;
+                height: 75px;
+            }
+
+            .stat-number {
+                font-size: 4em;
+            }
+
+            .stat-label {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .dashboard-container {
+                margin-left: 20px;
+                margin-right: 20px;
+                width: calc(100% - 40px);
+                padding: 30px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .stat-card {
+                min-height: 150px;
+                padding: 30px 25px;
+            }
+
+            .stat-number {
+                font-size: 3.5em;
+            }
+
+            .stat-label {
+                font-size: 1.15em;
+            }
+        }
+
+        /* Responsive - Móviles */
+        @media (max-width: 480px) {
+            .dashboard-container {
+                margin: 20px 10px;
+                width: calc(100% - 20px);
+                padding: 25px 20px;
+            }
+
+            .dashboard-header {
+                margin-bottom: 25px;
+                padding-bottom: 15px;
+            }
+
+            .dashboard-title {
+                font-size: 1.8em;
+            }
+
+            .stats-grid {
+                gap: 15px;
+            }
+
+            .stat-card {
+                flex-direction: row;
+                padding: 25px 20px;
+                min-height: 130px;
+                gap: 20px;
+            }
+
+            .stat-icon {
+                width: 70px;
+                height: 70px;
+            }
+
+            .stat-icon ion-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .stat-info {
+                text-align: right;
+            }
+
+            .stat-number {
+                font-size: 2.8em;
+            }
+
+            .stat-label {
+                font-size: 0.95em;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -61,7 +318,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     </a>
                 </li>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol = "Operario"): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
                     <!-- MÁQUINAS -->
                     <?php $maquinasPages = ['index_maquinas.php', 'crear_maquinas.php', 'editar_maquinas.php', 'ver_maquinas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $maquinasPages) ? 'active' : ''; ?>">
@@ -70,9 +327,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                             <span class="title">Máquinas</span>
                         </a>
                     </li>
-                <?php endif; ?>
-
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
 
                     <!-- LÍNEAS -->
                     <?php $lineasPages = ['index_lineas.php', 'crear_lineas.php', 'editar_lineas.php', 'ver_lineas.php']; ?>
@@ -84,7 +338,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     </li>
                 <?php endif; ?>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
                     <!-- MANTENIMIENTO -->
                     <?php $mantenimientoPages = ['index_mantenimiento.php', 'crear_mantenimiento.php', 'editar_mantenimiento.php', 'ver_mantenimiento.php']; ?>
                     <li class="<?php echo in_array($currentPage, $mantenimientoPages) ? 'active' : ''; ?>">
@@ -189,17 +443,13 @@ if (!isset($_SESSION['usuarioingresando'])) {
         }
         ?>
 
-        <div class="dashboard-content">
+        <div class="dashboard-container">
+            
             <div class="stats-grid">
                 <!-- Tarjeta: Máquinas activas -->
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <span class="stat-icon-maquinasactivas"><ion-icon
-                                name="hardware-chip-outline"></ion-icon></span>
-                        <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-                            <path d="M12 8v8m-4-4h8"/>
-                        </svg> -->
+                    <div class="stat-icon stat-icon-maquinasactivas">
+                        <ion-icon name="hardware-chip-outline"></ion-icon>
                     </div>
                     <div class="stat-info">
                         <div class="stat-number"><?php echo $total_maquinas; ?></div>
@@ -209,12 +459,8 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
                 <!-- Tarjeta: Tickets activos -->
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <span class="stat-icon-ticketactivo"><ion-icon name="document-text-outline"></ion-icon></span>
-                        <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 8v4m0 4h.01"/>
-                        </svg> -->
+                    <div class="stat-icon stat-icon-ticketactivo">
+                        <ion-icon name="document-text-outline"></ion-icon>
                     </div>
                     <div class="stat-info">
                         <div class="stat-number"><?php echo $total_tickets_activos; ?></div>
@@ -224,13 +470,8 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
                 <!-- Tarjeta: Técnicos activos -->
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
-                            <path d="M16 11l2 2 4-4" />
-                        </svg>
-
+                    <div class="stat-icon stat-icon-tecnicos">
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
                     <div class="stat-info">
                         <div class="stat-number"><?php echo $total_tecnicos; ?></div>
@@ -240,12 +481,8 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
                 <!-- Tarjeta: Tickets finalizados -->
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 11l3 3L22 4" />
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                        </svg>
-
+                    <div class="stat-icon stat-icon-finalizados">
+                        <ion-icon name="checkmark-done-outline"></ion-icon>
                     </div>
                     <div class="stat-info">
                         <div class="stat-number"><?php echo $total_tickets_finalizados; ?></div>
@@ -254,7 +491,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                 </div>
             </div>
         </div>
-
     </div>
 
 
@@ -263,16 +499,16 @@ if (!isset($_SESSION['usuarioingresando'])) {
         <div class="modal-content">
             <div class="modal-header">
                 <span class="close-btn" id="closeContact">&times;</span>
-                <h2>Información de Contacto</h2>
+                <h2>Información</h2>
             </div>
             <div class="modal-body">
-                <h3><?php echo '' . $_SESSION["usuarioingresando"] . ''; ?></h3>
+                <h3><?php echo htmlspecialchars($_SESSION["usuarioingresando"]); ?></h3>
                 <p></p>
-                <!-- <div class="socialMedia">
+                <div class="socialMedia">
                     <a class="socialIcon" href="https://github.com/MeetsEvil" target="_blank"><i class="fab fa-github"></i></a>
                     <a class="socialIcon" href="https://www.linkedin.com/in/orlandojgarciap-17a612289/" target="_blank"><i class="fab fa-linkedin"></i></a>
                     <a class="socialIcon" href="mailto:orlandojgarciap@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>
