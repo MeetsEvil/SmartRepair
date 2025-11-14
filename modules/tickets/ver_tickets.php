@@ -215,7 +215,7 @@ $rol = $_SESSION['rol'];
             color: white;
         }
 
-        .prioridad-critica {
+        .prioridad-crítica {
             background: #DC2626;
         }
 

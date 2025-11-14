@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Generador QR</title>
+  <link rel="stylesheet" href="css/generarQR.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Generador -->
+    <div class="card">
+      <h2>Generador de QR</h2>
+      <label for="txt">Texto:</label>
+      <input id="txt" type="text" placeholder="Escribe un texto o URL" value="https://example.com" />
+      <div class="controls">
+        <button id="gen">Generar QR</button>
+        <button id="download" class="secondary">Descargar PNG</button>
+      </div>
+      <div class="footer">
+        <p class="small">Se genera el código QR abajo. Haz clic en "Descargar PNG" para obtener la imagen.</p>
+      </div>
+      <div id="qrcode" class="center" style="margin-top:12px"></div>
+    </div>
+
+    
+  </div>
+
+  <!-- Librerías -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+
+  <script>
+    // Generador
+    const txt = document.getElementById('txt');
+    const genBtn = document.getElementById('gen');
+    const qrcodeEl = document.getElementById('qrcode');
+    const downloadBtn = document.getElementById('download');
+    let qr;
+
+    function generateQR(value){
+      qrcodeEl.innerHTML = '';
+      qr = new QRCode(qrcodeEl, {text: value,width: 220, height:220, correctLevel: QRCode.CorrectLevel.H});
+    }
+
+    genBtn.addEventListener('click', ()=>{
+      const v = txt.value.trim();
+      if(!v){ alert('Introduce un texto.'); return }
+      generateQR(v);
+      console.log('QR generado para:', v);
+    });
+
+    downloadBtn.addEventListener('click', ()=>{
+      if(!qrcodeEl.querySelector('img') && !qrcodeEl.querySelector('canvas')){ alert('Genera primero un QR.'); return }
+      // QRCode.js may render as <img> or <canvas>
+      let img = qrcodeEl.querySelector('img');
+      if(img){
+        const url = img.src;
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `QR-${txt.value}.png`;
+        a.click();
+        return;
+      }
+      let c = qrcodeEl.querySelector('canvas');
+      if(c){
+        const url = c.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `qr-${new Date().toISOString().slice(0,10)}.png`;
+        a.click();
+      }
+    });
+
+    // Generar uno inicial al cargar
+    window.addEventListener('load', ()=>{
+      generateQR(txt.value);
+    });
+  </script>
+</body>
+</html>

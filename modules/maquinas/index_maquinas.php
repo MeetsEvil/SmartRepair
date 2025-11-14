@@ -490,6 +490,11 @@ if (!isset($_SESSION['usuarioingresando'])) {
             <div class="header-section">
                 <h2 class="section-title">Máquinas</h2>
                 <div style="display: flex; gap: 10px;">
+                    <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
+                        <button onclick="abrirEscanerQR()" class="btn-new" style="background: linear-gradient(90deg, #2196F3, #0D47A1) !important;">
+                            <ion-icon name="qr-code-outline"></ion-icon> Buscar por QR
+                        </button>
+                    <?php endif; ?>
                     <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
                         <a href="crear_maquinas.php" class="btn-new">
                             <ion-icon name="add-circle-outline"></ion-icon> Nueva Máquina
@@ -561,6 +566,38 @@ if (!isset($_SESSION['usuarioingresando'])) {
         </div>
     </div>
 
+    <!-- Modal Escáner QR -->
+    <div id="qrScannerModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <span class="close-btn" onclick="cerrarEscanerQR()">&times;</span>
+                <h2>Escanear Código QR</h2>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; color: #666;">
+                    Apunta la cámara hacia el código QR de la máquina
+                </p>
+                <div style="text-align: center;">
+                    <video id="qr-video" playsinline style="width: 100%; max-width: 500px; border: 2px solid #932323; border-radius: 8px;"></video>
+                    <canvas id="qr-canvas" style="display: none;"></canvas>
+                </div>
+                <div id="qr-result" style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; display: none;">
+                    <strong>Código detectado:</strong>
+                    <div id="qr-text" style="font-family: monospace; color: #932323; margin-top: 5px;"></div>
+                </div>
+                <div id="qr-loading" style="margin-top: 15px; text-align: center; display: none;">
+                    <p style="color: #666;">Buscando máquina...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="cerrarEscanerQR()">
+                    <ion-icon name="close-outline"></ion-icon> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <script>
         let tablaMaquinas;
         let mostrandoInactivas = false;
@@ -689,6 +726,108 @@ if (!isset($_SESSION['usuarioingresando'])) {
             const deleteModal = document.getElementById('deleteModal');
             if (event.target == deleteModal) {
                 cerrarModalEliminar();
+            }
+        }
+
+        // ==================== ESCÁNER QR ====================
+        let qrStream = null;
+        let qrScanning = false;
+        const qrVideo = document.getElementById('qr-video');
+        const qrCanvas = document.getElementById('qr-canvas');
+        const qrCtx = qrCanvas.getContext('2d');
+
+        async function abrirEscanerQR() {
+            document.getElementById('qrScannerModal').style.display = 'flex';
+            document.getElementById('qr-result').style.display = 'none';
+            document.getElementById('qr-loading').style.display = 'none';
+            
+            try {
+                qrStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                qrVideo.srcObject = qrStream;
+                await qrVideo.play();
+                qrScanning = true;
+                qrCanvas.width = qrVideo.videoWidth || 640;
+                qrCanvas.height = qrVideo.videoHeight || 480;
+                escanearQR();
+            } catch (err) {
+                console.error('Error al acceder a la cámara:', err);
+                alert('No se pudo acceder a la cámara. Asegúrate de dar permisos o usar HTTPS/localhost.');
+            }
+        }
+
+        function cerrarEscanerQR() {
+            qrScanning = false;
+            if (qrStream) {
+                qrStream.getTracks().forEach(track => track.stop());
+                qrStream = null;
+            }
+            qrVideo.pause();
+            qrVideo.srcObject = null;
+            document.getElementById('qrScannerModal').style.display = 'none';
+        }
+
+        function escanearQR() {
+            if (!qrScanning) return;
+            
+            if (qrVideo.readyState === qrVideo.HAVE_ENOUGH_DATA) {
+                qrCanvas.width = qrVideo.videoWidth;
+                qrCanvas.height = qrVideo.videoHeight;
+                qrCtx.drawImage(qrVideo, 0, 0, qrCanvas.width, qrCanvas.height);
+                
+                const imageData = qrCtx.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height, { 
+                    inversionAttempts: 'attemptBoth' 
+                });
+                
+                if (code) {
+                    const codigoQR = code.data;
+                    document.getElementById('qr-text').textContent = codigoQR;
+                    document.getElementById('qr-result').style.display = 'block';
+                    console.log('Código QR detectado:', codigoQR);
+                    
+                    // Detener escaneo y buscar máquina
+                    qrScanning = false;
+                    buscarMaquinaPorQR(codigoQR);
+                    return;
+                }
+            }
+            
+            requestAnimationFrame(escanearQR);
+        }
+
+        async function buscarMaquinaPorQR(codigoQR) {
+            document.getElementById('qr-loading').style.display = 'block';
+            
+            try {
+                const response = await fetch('buscar_por_qr.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ codigoQR: codigoQR })
+                });
+                
+                const data = await response.json();
+                document.getElementById('qr-loading').style.display = 'none';
+                
+                if (data.success) {
+                    // Máquina encontrada, redirigir a ver máquina
+                    cerrarEscanerQR();
+                    window.location.href = 'ver_maquinas.php?id=' + data.maquina.id_maquina;
+                } else {
+                    alert('No se encontró ninguna máquina con ese código QR: ' + codigoQR);
+                    // Reiniciar escaneo
+                    document.getElementById('qr-result').style.display = 'none';
+                    qrScanning = true;
+                    escanearQR();
+                }
+            } catch (error) {
+                console.error('Error al buscar máquina:', error);
+                alert('Error al buscar la máquina. Intente nuevamente.');
+                document.getElementById('qr-loading').style.display = 'none';
+                cerrarEscanerQR();
             }
         }
     </script>
