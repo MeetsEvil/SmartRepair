@@ -61,7 +61,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     </a>
                 </li>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol = "Operario"): ?>
                     <!-- MÁQUINAS -->
                     <?php $maquinasPages = ['index_maquinas.php', 'crear_maquinas.php', 'editar_maquinas.php', 'ver_maquinas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $maquinasPages) ? 'active' : ''; ?>">
@@ -70,6 +70,9 @@ if (!isset($_SESSION['usuarioingresando'])) {
                             <span class="title">Máquinas</span>
                         </a>
                     </li>
+                <?php endif; ?>
+
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
 
                     <!-- LÍNEAS -->
                     <?php $lineasPages = ['index_lineas.php', 'crear_lineas.php', 'editar_lineas.php', 'ver_lineas.php']; ?>
@@ -81,7 +84,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     </li>
                 <?php endif; ?>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
                     <!-- MANTENIMIENTO -->
                     <?php $mantenimientoPages = ['index_mantenimiento.php', 'crear_mantenimiento.php', 'editar_mantenimiento.php', 'ver_mantenimiento.php']; ?>
                     <li class="<?php echo in_array($currentPage, $mantenimientoPages) ? 'active' : ''; ?>">
@@ -143,6 +146,114 @@ if (!isset($_SESSION['usuarioingresando'])) {
             </div>
         </div>
 
+        <?php
+        // Incluir conexión a la base de datos
+        require_once '../../config/db.php';
+
+        // Inicializar variables con valores por defecto
+        $total_maquinas = 0;
+        $total_tickets_activos = 0;
+        $total_tecnicos = 0;
+        $total_tickets_finalizados = 0;
+
+        // Consulta para contar máquinas activas
+        $query_maquinas = "SELECT COUNT(*) as total FROM maquinas WHERE estado = 'Activa'";
+        $result_maquinas = mysqli_query($conexion, $query_maquinas);
+        if ($result_maquinas) {
+            $row = mysqli_fetch_assoc($result_maquinas);
+            $total_maquinas = $row['total'];
+        }
+
+        // Consulta para contar tickets activos (Pendiente o En progreso)
+        $query_tickets_activos = "SELECT COUNT(*) as total FROM tickets WHERE id_estado IN (1, 2)";
+        $result_tickets_activos = mysqli_query($conexion, $query_tickets_activos);
+        if ($result_tickets_activos) {
+            $row = mysqli_fetch_assoc($result_tickets_activos);
+            $total_tickets_activos = $row['total'];
+        }
+
+        // Consulta para contar técnicos activos
+        $query_tecnicos = "SELECT COUNT(*) as total FROM usuarios WHERE id_rol = 2 AND estado = 'Activo'";
+        $result_tecnicos = mysqli_query($conexion, $query_tecnicos);
+        if ($result_tecnicos) {
+            $row = mysqli_fetch_assoc($result_tecnicos);
+            $total_tecnicos = $row['total'];
+        }
+
+        // Consulta para contar tickets finalizados
+        $query_tickets_finalizados = "SELECT COUNT(*) as total FROM tickets WHERE id_estado = 4";
+        $result_tickets_finalizados = mysqli_query($conexion, $query_tickets_finalizados);
+        if ($result_tickets_finalizados) {
+            $row = mysqli_fetch_assoc($result_tickets_finalizados);
+            $total_tickets_finalizados = $row['total'];
+        }
+        ?>
+
+        <div class="dashboard-content">
+            <div class="stats-grid">
+                <!-- Tarjeta: Máquinas activas -->
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="stat-icon-maquinasactivas"><ion-icon
+                                name="hardware-chip-outline"></ion-icon></span>
+                        <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                            <path d="M12 8v8m-4-4h8"/>
+                        </svg> -->
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-number"><?php echo $total_maquinas; ?></div>
+                        <div class="stat-label">Máquinas activas</div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta: Tickets activos -->
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="stat-icon-ticketactivo"><ion-icon name="document-text-outline"></ion-icon></span>
+                        <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 8v4m0 4h.01"/>
+                        </svg> -->
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-number"><?php echo $total_tickets_activos; ?></div>
+                        <div class="stat-label">Tickets activos</div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta: Técnicos activos -->
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                            <path d="M16 11l2 2 4-4" />
+                        </svg>
+
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-number"><?php echo $total_tecnicos; ?></div>
+                        <div class="stat-label">Técnicos activos</div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta: Tickets finalizados -->
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11l3 3L22 4" />
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        </svg>
+
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-number"><?php echo $total_tickets_finalizados; ?></div>
+                        <div class="stat-label">Tickets finalizados</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 

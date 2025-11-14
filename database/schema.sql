@@ -128,7 +128,7 @@ CREATE TABLE maquinas (
     id_planta INT NOT NULL,
     id_linea INT NOT NULL,
     area VARCHAR(100) COMMENT 'Área dentro de la planta',
-    foto_url VARCHAR(255) COMMENT 'Ruta de la foto de la máquina',
+    imagen VARCHAR(255) DEFAULT 'imgMaquinas/no-maquina.png' COMMENT 'Ruta de la imagen de la máquina',
     fecha_instalacion DATE,
     estado ENUM('Activa', 'Inactiva', 'Mantenimiento', 'Fuera de servicio') DEFAULT 'Activa',
     observaciones TEXT,

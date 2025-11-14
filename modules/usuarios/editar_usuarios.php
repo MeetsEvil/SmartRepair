@@ -63,7 +63,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             width: calc(95% - 100px);
             min-height: 95px;
-            height: 740px;
+            height: auto;
             display: flex;
             flex-direction: column;
         }

@@ -71,8 +71,6 @@ mysqli_close($conexion);
             width: calc(95% - 100px);
             min-height: 95px;
             height: auto;
-            height: 740px;
-
         }
 
         .view-container:hover {
