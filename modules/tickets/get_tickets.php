@@ -14,6 +14,7 @@ $query = "SELECT
             t.id_ticket,
             t.codigo_ticket,
             t.descripcion_falla as descripcion,
+            t.foto_url,
             pr.nombre_prioridad as prioridad,
             t.id_estado,
             t.fecha_asignacion as fecha_inicio_progreso,

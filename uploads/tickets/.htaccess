@@ -1,0 +1,36 @@
+# Configurar tipos MIME para imágenes
+AddType image/jpeg .jpg .jpeg .jfif
+AddType image/png .png
+AddType image/gif .gif
+
+# Permitir solo visualización de imágenes
+<FilesMatch "\.(jpg|jpeg|png|gif|jfif)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Denegar acceso a otros archivos
+<FilesMatch "\.">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Permitir archivos de imagen
+<FilesMatch "\.(jpg|jpeg|png|gif|jfif)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Prevenir listado de directorios
+Options -Indexes
+
+# Habilitar seguimiento de enlaces simbólicos
+Options +FollowSymLinks
+
+# Configurar caché para imágenes
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+</IfModule>

@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($resultado && mysqli_num_rows($resultado) === 1) {
         $fila = mysqli_fetch_assoc($resultado);
         $_SESSION['usuarioingresando'] = $fila['usuario'];
+        $_SESSION['id_usuario'] = $fila['id_usuario'];
         if($fila['id_rol'] == 1){
             $_SESSION['rol'] = "Administrador";
         }elseif($fila['id_rol'] == 2){

@@ -1,11 +1,8 @@
 <?php
 session_start();
 
-// Verificar sesión y permisos (Admin y Técnico)
-if (
-    !isset($_SESSION['usuarioingresando']) ||
-    ($_SESSION['rol'] != 'Administrador' && $_SESSION['rol'] != 'Técnico')
-) {
+// Verificar sesión y permisos
+if (!isset($_SESSION['usuarioingresando'])) {
     header("Location: ../main/index.php");
     exit();
 }
@@ -20,14 +17,21 @@ if (!$id_ticket) {
     exit();
 }
 
-// Obtener datos del ticket
-$query = "SELECT t.*, m.codigo_maquina, l.nombre_linea, p.nombre_planta, pr.nombre_prioridad
-          FROM tickets t
-          INNER JOIN maquinas m ON t.id_maquina = m.id_maquina
-          INNER JOIN lineas l ON m.id_linea = l.id_linea
-          INNER JOIN plantas p ON l.id_planta = p.id_planta
-          INNER JOIN prioridades pr ON t.id_prioridad = pr.id_prioridad
-          WHERE t.id_ticket = '$id_ticket'";
+// Obtener datos del ticket con toda la información necesaria
+$query = "SELECT t.*, m.codigo_maquina, l.nombre_linea, p.nombre_planta, 
+            pr.nombre_prioridad, e.nombre_estado, tf.nombre_tipo_falla,
+            CONCAT(u_reporta.nombre, ' ', u_reporta.apellido) as reportado_por,
+            CONCAT(u_tecnico.nombre, ' ', u_tecnico.apellido) as tecnico_responsable
+            FROM tickets t
+            INNER JOIN maquinas m ON t.id_maquina = m.id_maquina
+            INNER JOIN lineas l ON m.id_linea = l.id_linea
+            INNER JOIN plantas p ON l.id_planta = p.id_planta
+            INNER JOIN prioridades pr ON t.id_prioridad = pr.id_prioridad
+            INNER JOIN estados_ticket e ON t.id_estado = e.id_estado
+            INNER JOIN tipos_falla tf ON t.id_tipo_falla = tf.id_tipo_falla
+            INNER JOIN usuarios u_reporta ON t.id_usuario_reporta = u_reporta.id_usuario
+            LEFT JOIN usuarios u_tecnico ON t.id_tecnico_responsable = u_tecnico.id_usuario
+            WHERE t.id_ticket = '$id_ticket'";
 $result = mysqli_query($conexion, $query);
 $ticket = mysqli_fetch_assoc($result);
 
@@ -36,28 +40,45 @@ if (!$ticket) {
     exit();
 }
 
-// Obtener lista de máquinas activas
-$query_maquinas = "SELECT m.id_maquina, m.codigo_maquina, l.nombre_linea
-                   FROM maquinas m
-                   INNER JOIN lineas l ON m.id_linea = l.id_linea
-                   WHERE m.estado = 'Activa'
-                   ORDER BY m.codigo_maquina";
-$result_maquinas = mysqli_query($conexion, $query_maquinas);
-$maquinas = array();
-while ($row = mysqli_fetch_assoc($result_maquinas)) {
-    $maquinas[] = $row;
+$rol = $_SESSION['rol'];
+$id_estado = $ticket['id_estado'];
+
+// Validar permisos según estado
+// Estado 1 (Pendiente): Admin y Técnico pueden asignar
+// Estado 2 (En Progreso): Solo Técnico asignado puede agregar causa raíz
+// Estado 3 (En Validación): Solo Admin puede confirmar
+
+// Estado 4 (Finalizado): No se puede editar
+if ($id_estado == 4) {
+    header("Location: ver_tickets.php?id=" . $id_ticket);
+    exit();
 }
 
-// Obtener lista de usuarios activos (Técnicos y Administradores)
-$query_usuarios = "SELECT u.id_usuario, CONCAT(u.nombre, ' ', u.apellido) as nombre_completo, r.nombre_rol
-                   FROM usuarios u
-                   INNER JOIN roles r ON u.id_rol = r.id_rol
-                   WHERE u.estado = 'Activo' AND (r.nombre_rol = 'Técnico' OR r.nombre_rol = 'Administrador')
-                   ORDER BY u.nombre, u.apellido";
-$result_usuarios = mysqli_query($conexion, $query_usuarios);
-$usuarios = array();
-while ($row = mysqli_fetch_assoc($result_usuarios)) {
-    $usuarios[] = $row;
+// Validar permisos específicos
+if ($id_estado == 2 && $rol == 'Técnico' && $ticket['id_tecnico_responsable'] != $_SESSION['id_usuario']) {
+    $_SESSION['mensaje'] = 'Solo el técnico asignado puede editar este ticket';
+    $_SESSION['tipo_mensaje'] = 'error';
+    header("Location: index_tickets.php");
+    exit();
+}
+
+if ($id_estado == 3 && $rol != 'Administrador') {
+    $_SESSION['mensaje'] = 'Solo un administrador puede confirmar la resolución';
+    $_SESSION['tipo_mensaje'] = 'error';
+    header("Location: index_tickets.php");
+    exit();
+}
+
+// Obtener lista de técnicos y administradores activos (para estado 1)
+$query_tecnicos = "SELECT u.id_usuario, CONCAT(u.nombre, ' ', u.apellido) as nombre_completo, r.nombre_rol
+                    FROM usuarios u
+                    INNER JOIN roles r ON u.id_rol = r.id_rol
+                    WHERE u.estado = 'Activo' AND (r.nombre_rol = 'Técnico' OR r.nombre_rol = 'Administrador')
+                    ORDER BY r.nombre_rol, u.nombre, u.apellido";
+$result_tecnicos = mysqli_query($conexion, $query_tecnicos);
+$tecnicos = array();
+while ($row = mysqli_fetch_assoc($result_tecnicos)) {
+    $tecnicos[] = $row;
 }
 ?>
 
@@ -71,20 +92,24 @@ while ($row = mysqli_fetch_assoc($result_usuarios)) {
     <link rel="stylesheet" href="../../assets/css/sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 
     <style>
         .form-container {
             margin: 30px auto;
             margin-top: 50px;
             margin-left: 100px;
+            margin-bottom: 90px;
             padding: 30px;
             background: white;
             border: 2px solid #adabab;
             border-radius: 25px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             width: calc(95% - 100px);
-            max-width: 1200px;
+            min-height: 95px;
+            height: 740px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .form-header {
@@ -168,11 +193,12 @@ while ($row = mysqli_fetch_assoc($result_usuarios)) {
 
         .form-group textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
         }
 
         .form-group input:disabled,
-        .form-group select:disabled {
+        .form-group select:disabled,
+        .form-group textarea:disabled {
             background-color: #f5f5f5;
             cursor: not-allowed;
         }
@@ -215,6 +241,9 @@ while ($row = mysqli_fetch_assoc($result_usuarios)) {
             font-size: 1em;
             cursor: pointer;
             transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-submit:hover {
@@ -250,10 +279,22 @@ while ($row = mysqli_fetch_assoc($result_usuarios)) {
             gap: 10px;
         }
 
+        .alert-info {
+            background: #dbeafe;
+            border-left: 4px solid #3B82F6;
+            color: #1e40af;
+        }
+
         .alert-warning {
-            background: #fff3cd;
+            background: #fef3c7;
             border-left: 4px solid #F59E0B;
-            color: #856404;
+            color: #92400e;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border-left: 4px solid #10B981;
+            color: #065f46;
         }
 
         .estado-badge {
@@ -273,13 +314,94 @@ while ($row = mysqli_fetch_assoc($result_usuarios)) {
             background: #fef3c7;
             color: #F59E0B;
         }
+
+        .estado-validacion {
+            background: #dbeafe;
+            color: #3B82F6;
+        }
+
+        .estado-finalizado {
+            background: #d1fae5;
+            color: #10B981;
+        }
+
+        .foto-preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .foto-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .foto-preview img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-ver-foto {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: linear-gradient(90deg, #3B82F6, #1e40af);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-ver-foto:hover {
+            background: linear-gradient(90deg, #2563eb, #1e3a8a);
+            transform: translateY(-2px);
+        }
+
+        .modal-foto {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-foto-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .modal-foto-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-foto-close:hover {
+            color: #bbb;
+        }
     </style>
 </head>
 
 <body>
     <?php
     $currentPage = basename($_SERVER['REQUEST_URI']);
-    $rol = $_SESSION['rol'];
     ?>
 
     <div class="container">
@@ -371,7 +493,13 @@ while ($row = mysqli_fetch_assoc($result_usuarios)) {
 
         <div class="form-container">
             <div class="form-header">
-                <h2 class="form-title">Editar Ticket</h2>
+                <h2 class="form-title">
+                    <?php
+                    if ($id_estado == 1) echo "Asignar Técnico";
+                    elseif ($id_estado == 2) echo "Agregar Causa Raíz y Solución";
+                    elseif ($id_estado == 3) echo "Confirmar Resolución";
+                    ?>
+                </h2>
                 <a href="index_tickets.php" class="btn-back">
                     <ion-icon name="arrow-back-outline"></ion-icon> Volver
                 </a>
@@ -380,87 +508,155 @@ while ($row = mysqli_fetch_assoc($result_usuarios)) {
             <div class="info-box">
                 <h3>Información del Ticket</h3>
                 <p><strong>Código:</strong> <?php echo htmlspecialchars($ticket['codigo_ticket']); ?></p>
+                <p><strong>Máquina:</strong> <?php echo htmlspecialchars($ticket['codigo_maquina']); ?></p>
+                <p><strong>Línea:</strong> <?php echo htmlspecialchars($ticket['nombre_linea']); ?></p>
+                <p><strong>Planta:</strong> <?php echo htmlspecialchars($ticket['nombre_planta']); ?></p>
+                <p><strong>Tipo de Falla:</strong> <?php echo htmlspecialchars($ticket['nombre_tipo_falla']); ?></p>
+                <p><strong>Prioridad:</strong> <?php echo htmlspecialchars($ticket['nombre_prioridad']); ?></p>
+                <p><strong>Reportado por:</strong> <?php echo htmlspecialchars($ticket['reportado_por']); ?></p>
                 <p><strong>Estado Actual:</strong>
                     <?php
-                    $estado_class = $ticket['id_estado'] == 1 ? 'estado-pendiente' : 'estado-progreso';
-                    $estado_texto = $ticket['id_estado'] == 1 ? 'Pendiente' : 'En Progreso';
+                    $estado_classes = [1 => 'estado-pendiente', 2 => 'estado-progreso', 3 => 'estado-validacion', 4 => 'estado-finalizado'];
+                    $estado_class = $estado_classes[$id_estado];
                     ?>
-                    <span class="estado-badge <?php echo $estado_class; ?>"><?php echo $estado_texto; ?></span>
+                    <span class="estado-badge <?php echo $estado_class; ?>"><?php echo htmlspecialchars($ticket['nombre_estado']); ?></span>
                 </p>
+                <?php if (!empty($ticket['foto_url'])): ?>
+                    <div class="foto-preview">
+                        <p><strong>Foto de la Falla:</strong></p>
+                        <a href="#" onclick="mostrarFoto('<?php echo htmlspecialchars($ticket['foto_url']); ?>'); return false;" class="btn-ver-foto">
+                            <ion-icon name="image-outline"></ion-icon> Ver Foto
+                        </a>
+                    </div>
+                <?php endif; ?>
             </div>
 
-            <?php if ($ticket['id_estado'] == 1): ?>
-                <div class="alert alert-warning">
+            <?php if ($id_estado == 1): ?>
+                <!-- FORMULARIO ESTADO 1: PENDIENTE → EN PROGRESO (Asignar Técnico) -->
+                <div class="alert alert-info">
                     <ion-icon name="information-circle-outline" style="font-size: 24px;"></ion-icon>
-                    <span>Al asignar un responsable, el ticket pasará automáticamente a estado "En Progreso"</span>
+                    <span>Al asignar un técnico, el ticket pasará automáticamente a estado "En Progreso"</span>
                 </div>
+
+                <form action="procesar_editar_ticket.php" method="POST" id="formAsignarTecnico">
+                    <input type="hidden" name="id_ticket" value="<?php echo $ticket['id_ticket']; ?>">
+                    <input type="hidden" name="accion" value="asignar_tecnico">
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Descripción de la Falla</label>
+                            <textarea disabled><?php echo htmlspecialchars($ticket['descripcion_falla']); ?></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="id_tecnico">Técnico Responsable <span class="required">*</span></label>
+                            <select name="id_tecnico" id="id_tecnico" required>
+                                <option value="">Seleccione un técnico</option>
+                                <?php foreach ($tecnicos as $tecnico): ?>
+                                    <option value="<?php echo $tecnico['id_usuario']; ?>">
+                                        <?php echo htmlspecialchars($tecnico['nombre_completo'] . ' (' . $tecnico['nombre_rol'] . ')'); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="index_tickets.php" class="btn-cancel">Cancelar</a>
+                        <button type="submit" class="btn-submit">
+                            <ion-icon name="person-add-outline"></ion-icon> Asignar Técnico
+                        </button>
+                    </div>
+                </form>
+
+            <?php elseif ($id_estado == 2): ?>
+                <!-- FORMULARIO ESTADO 2: EN PROGRESO → EN VALIDACIÓN (Agregar Causa Raíz) -->
+                <div class="alert alert-warning">
+                    <ion-icon name="construct-outline" style="font-size: 24px;"></ion-icon>
+                    <span>Complete la causa raíz y la solución aplicada para enviar el ticket a validación</span>
+                </div>
+
+                <form action="procesar_editar_ticket.php" method="POST" id="formCausaRaiz">
+                    <input type="hidden" name="id_ticket" value="<?php echo $ticket['id_ticket']; ?>">
+                    <input type="hidden" name="accion" value="agregar_causa_raiz">
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Descripción de la Falla</label>
+                            <textarea disabled><?php echo htmlspecialchars($ticket['descripcion_falla']); ?></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Técnico Asignado</label>
+                            <input type="text" value="<?php echo htmlspecialchars($ticket['tecnico_responsable']); ?>" disabled>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="causa_raiz">Causa Raíz <span class="required">*</span></label>
+                            <textarea name="causa_raiz" id="causa_raiz" required placeholder="Describa la causa raíz identificada del problema..."><?php echo htmlspecialchars($ticket['causa_raiz'] ?? ''); ?></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="solucion_aplicada">Solución Aplicada <span class="required">*</span></label>
+                            <textarea name="solucion_aplicada" id="solucion_aplicada" required placeholder="Describa la solución que se aplicó para resolver el problema..."><?php echo htmlspecialchars($ticket['solucion_aplicada'] ?? ''); ?></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="index_tickets.php" class="btn-cancel">Cancelar</a>
+                        <button type="submit" class="btn-submit">
+                            <ion-icon name="checkmark-done-outline"></ion-icon> Enviar a Validación
+                        </button>
+                    </div>
+                </form>
+
+            <?php elseif ($id_estado == 3): ?>
+                <!-- FORMULARIO ESTADO 3: EN VALIDACIÓN → FINALIZADO (Confirmar Resolución) -->
+                <div class="alert alert-success">
+                    <ion-icon name="checkmark-circle-outline" style="font-size: 24px;"></ion-icon>
+                    <span>Revise la información y confirme la resolución del ticket para finalizarlo</span>
+                </div>
+
+                <form action="procesar_editar_ticket.php" method="POST" id="formConfirmarResolucion">
+                    <input type="hidden" name="id_ticket" value="<?php echo $ticket['id_ticket']; ?>">
+                    <input type="hidden" name="accion" value="confirmar_resolucion">
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Descripción de la Falla</label>
+                            <textarea disabled><?php echo htmlspecialchars($ticket['descripcion_falla']); ?></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Técnico Responsable</label>
+                            <input type="text" value="<?php echo htmlspecialchars($ticket['tecnico_responsable']); ?>" disabled>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Causa Raíz Identificada</label>
+                            <textarea disabled><?php echo htmlspecialchars($ticket['causa_raiz'] ?? 'No especificada'); ?></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Solución Aplicada</label>
+                            <textarea disabled><?php echo htmlspecialchars($ticket['solucion_aplicada'] ?? 'No especificada'); ?></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="observaciones">Observaciones Finales (Opcional)</label>
+                            <textarea name="observaciones" id="observaciones" placeholder="Agregue observaciones adicionales si es necesario..."><?php echo htmlspecialchars($ticket['observaciones'] ?? ''); ?></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="index_tickets.php" class="btn-cancel">Cancelar</a>
+                        <button type="submit" class="btn-submit">
+                            <ion-icon name="checkmark-circle-outline"></ion-icon> Confirmar y Finalizar
+                        </button>
+                    </div>
+                </form>
+
             <?php endif; ?>
-
-            <form action="procesar_editar_ticket.php" method="POST" id="formEditarTicket">
-                <input type="hidden" name="id_ticket" value="<?php echo $ticket['id_ticket']; ?>">
-                <input type="hidden" name="estado_actual" value="<?php echo $ticket['id_estado']; ?>">
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Código Ticket</label>
-                        <input type="text" value="<?php echo htmlspecialchars($ticket['codigo_ticket']); ?>" disabled>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_maquina">Máquina <span class="required">*</span></label>
-                        <select name="id_maquina" id="id_maquina" required>
-                            <option value="">Seleccione una máquina</option>
-                            <?php foreach ($maquinas as $maquina): ?>
-                                <option value="<?php echo $maquina['id_maquina']; ?>"
-                                    <?php echo ($maquina['id_maquina'] == $ticket['id_maquina']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($maquina['codigo_maquina'] . ' (' . $maquina['nombre_linea'] . ')'); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_prioridad">Prioridad <span class="required">*</span></label>
-                        <select name="id_prioridad" id="id_prioridad" required>
-                            <?php
-                            $query_prioridades = "SELECT * FROM prioridades ORDER BY nivel ASC";
-                            $result_prioridades = mysqli_query($conexion, $query_prioridades);
-                            while ($prioridad = mysqli_fetch_assoc($result_prioridades)):
-                            ?>
-                                <option value="<?php echo $prioridad['id_prioridad']; ?>" 
-                                        <?php echo ($prioridad['id_prioridad'] == $ticket['id_prioridad']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($prioridad['nombre_prioridad']); ?>
-                                </option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_responsable">Responsable <?php echo ($ticket['id_estado'] == 1) ? '<span class="required">*</span>' : ''; ?></label>
-                        <select name="id_responsable" id="id_responsable" <?php echo ($ticket['id_estado'] == 1) ? 'required' : ''; ?>>
-                            <option value="">Sin asignar</option>
-                            <?php foreach ($usuarios as $usuario): ?>
-                                <option value="<?php echo $usuario['id_usuario']; ?>"
-                                    <?php echo ($usuario['id_usuario'] == $ticket['id_tecnico_responsable']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($usuario['nombre_completo'] . ' (' . $usuario['nombre_rol'] . ')'); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="descripcion">Descripción del Problema <span class="required">*</span></label>
-                        <textarea name="descripcion" id="descripcion" required><?php echo htmlspecialchars($ticket['descripcion_falla']); ?></textarea>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <a href="index_tickets.php" class="btn-cancel">Cancelar</a>
-                    <button type="submit" class="btn-submit">
-                        <ion-icon name="save-outline"></ion-icon> Guardar Cambios
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -480,26 +676,67 @@ while ($row = mysqli_fetch_assoc($result_usuarios)) {
         </div>
     </div>
 
+    <!-- Modal para mostrar foto -->
+    <div id="modalFoto" class="modal-foto">
+        <span class="modal-foto-close" onclick="cerrarFoto()">&times;</span>
+        <img class="modal-foto-content" id="imgFoto">
+    </div>
+
     <script>
-        // Validación del formulario
-        document.getElementById('formEditarTicket').addEventListener('submit', function(e) {
-            const descripcion = document.getElementById('descripcion').value.trim();
-            const responsable = document.getElementById('id_responsable').value;
-            const estadoActual = document.querySelector('input[name="estado_actual"]').value;
+        function mostrarFoto(url) {
+            document.getElementById('modalFoto').style.display = 'block';
+            document.getElementById('imgFoto').src = '../../' + url;
+        }
 
-            if (descripcion.length < 10) {
-                e.preventDefault();
-                alert('La descripción debe tener al menos 10 caracteres');
-                return false;
-            }
+        function cerrarFoto() {
+            document.getElementById('modalFoto').style.display = 'none';
+        }
 
-            // Si está en estado Pendiente, debe asignar responsable
-            if (estadoActual == '1' && !responsable) {
-                e.preventDefault();
-                alert('Debe asignar un responsable para continuar');
-                return false;
+        // Cerrar modal al hacer clic fuera de la imagen
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalFoto');
+            if (event.target == modal) {
+                cerrarFoto();
             }
-        });
+        }
+    </script>
+
+    <script>
+        // Validación del formulario según el estado
+        <?php if ($id_estado == 1): ?>
+            document.getElementById('formAsignarTecnico').addEventListener('submit', function(e) {
+                const tecnico = document.getElementById('id_tecnico').value;
+                if (!tecnico) {
+                    e.preventDefault();
+                    alert('Debe seleccionar un técnico responsable');
+                    return false;
+                }
+            });
+        <?php elseif ($id_estado == 2): ?>
+            document.getElementById('formCausaRaiz').addEventListener('submit', function(e) {
+                const causaRaiz = document.getElementById('causa_raiz').value.trim();
+                const solucion = document.getElementById('solucion_aplicada').value.trim();
+
+                if (causaRaiz.length < 20) {
+                    e.preventDefault();
+                    alert('La causa raíz debe tener al menos 20 caracteres');
+                    return false;
+                }
+
+                if (solucion.length < 20) {
+                    e.preventDefault();
+                    alert('La solución aplicada debe tener al menos 20 caracteres');
+                    return false;
+                }
+            });
+        <?php elseif ($id_estado == 3): ?>
+            document.getElementById('formConfirmarResolucion').addEventListener('submit', function(e) {
+                if (!confirm('¿Está seguro de que desea finalizar este ticket? Esta acción no se puede deshacer.')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        <?php endif; ?>
     </script>
 
     <script src="../../assets/js/main.js"></script>

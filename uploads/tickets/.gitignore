@@ -1,0 +1,9 @@
+# Ignorar todas las imágenes subidas
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Pero mantener el archivo .htaccess
+!.htaccess
+!.gitignore

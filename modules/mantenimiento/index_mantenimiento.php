@@ -1,18 +1,18 @@
 <?php
 session_start();
-if (!isset($_SESSION['usuarioingresando'])) {
+if (!isset($_SESSION['usuarioingresando']) || ($_SESSION['rol'] != 'Administrador' && $_SESSION['rol'] != 'Técnico')) {
     header("Location: ../main/index.php");
     exit();
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Líneas - SmartRepair</title>
+    <title>Mantenimientos - SmartRepair</title>
     <link rel="stylesheet" href="../../assets/css/sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -27,40 +27,34 @@ if (!isset($_SESSION['usuarioingresando'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 
-
     <style>
-        .usuarios-container {
+        /* ================= CONTENEDOR PRINCIPAL ================= */
+        .mantenimientos-container {
             margin: 30px auto;
             margin-top: 50px;
             margin-left: 100px;
             margin-bottom: 90px;
             padding: 30px;
             border: 1px solid #000;
-            /* borde negro */
-            /* Degradado y bordes */
             background: white;
             border: 2px solid #adabab;
             border-radius: 25px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-
-            /* Dimensiones */
             width: calc(95% - 100px);
             min-height: 95px;
             height: 740px;
-
-            /* Configuración del layout interno */
             display: flex;
             flex-direction: column;
-            /* Cambiado para apilar los elementos verticalmente */
-            /* Aquí se elimina justify-content: center y align-items: center */
+            transition: all 0.3s ease;
         }
 
-        .usuarios-container:hover {
+        .mantenimientos-container:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Header con título y botones */
+        /* ================= HEADER CON TÍTULO Y BOTONES ================= */
+
         .header-section {
             display: flex !important;
             justify-content: space-between !important;
@@ -77,8 +71,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
             margin: 0;
         }
 
-
-        /* Botones de acción */
+        /* ================= BOTONES DE ACCIÓN ================= */
         .btn-new {
             background: rgba(177, 20, 20, 1) !important;
             border: none !important;
@@ -152,19 +145,19 @@ if (!isset($_SESSION['usuarioingresando'])) {
             transform: translateY(-2px) !important;
         }
 
-
         /* ================= TABLA ================= */
-        #tablaUsuarios {
+
+        #mantenimientosTable {
             width: 100% !important;
             border-collapse: collapse !important;
             background: white !important;
         }
 
-        #tablaUsuarios thead {
+        #mantenimientosTable thead {
             background: rgba(177, 20, 20, 1) !important;
         }
 
-        #tablaUsuarios th {
+        #mantenimientosTable th {
             background: transparent !important;
             color: white !important;
             font-weight: 600 !important;
@@ -175,7 +168,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
             letter-spacing: 0.5px !important;
         }
 
-        #tablaUsuarios td {
+        #mantenimientosTable td {
             padding: 12px 10px !important;
             text-align: center !important;
             vertical-align: middle !important;
@@ -183,23 +176,24 @@ if (!isset($_SESSION['usuarioingresando'])) {
             font-size: 0.9em !important;
         }
 
-        #tablaUsuarios tbody tr {
+        #mantenimientosTable tbody tr {
             transition: all 0.2s ease !important;
         }
 
-        #tablaUsuarios tbody tr:hover {
+        #mantenimientosTable tbody tr:hover {
             background-color: #fff5f5 !important;
             transform: scale(1.01) !important;
             box-shadow: 0 2px 5px rgba(147, 35, 35, 0.1) !important;
         }
 
-        #tablaUsuarios tbody tr:nth-child(even) {
+        #mantenimientosTable tbody tr:nth-child(even) {
             background-color: #fafafa !important;
         }
 
-        #tablaUsuarios tbody tr:nth-child(even):hover {
+        #mantenimientosTable tbody tr:nth-child(even):hover {
             background-color: #fff5f5 !important;
         }
+
         /* ================= PAGINACIÓN ================= */
         .dataTables_wrapper .dataTables_paginate {
             padding-top: 20px !important;
@@ -218,6 +212,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
             background: linear-gradient(90deg, rgba(224, 90, 90, 1), rgba(177, 20, 20, 1)) !important;
+            color: white !important;
             border: 2px solid rgba(177, 20, 20, 1) !important;
             transform: translateY(-2px) !important;
         }
@@ -246,26 +241,141 @@ if (!isset($_SESSION['usuarioingresando'])) {
             color: #333 !important;
         }
 
-        /* ================= RESPONSIVE ================= */
-        @media (max-width: 1200px) {
-            .usuarios-container {
-                margin-left: 20px !important;
-                margin-right: 20px !important;
-                padding: 20px !important;
-            }
+        /* ================= MODALES ================= */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
 
-            .header-section {
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                gap: 15px !important;
+        .modal-content {
+            background-color: #fefefe;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
             }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, #932323, #4d0d0d);
+            color: white;
+            padding: 15px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-body p {
+            font-size: 1.1em;
+            color: #333;
+            margin: 0;
+        }
+
+        .modal-footer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 5px;
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-cancel,
+        .btn-confirm {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 1.1em;
+        }
+
+        .btn-cancel {
+            background-color: #7e7d7d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #888;
+        }
+
+        .btn-confirm {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background-color: #c82333;
+        }
+
+        .tipo-badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: white;
+        }
+
+        .tipo-preventivo {
+            background: #10B981;
+        }
+
+        .tipo-correctivo {
+            background: #F59E0B;
+        }
+
+        .tipo-predictivo {
+            background: #3B82F6;
+        }
+
+        .tipo-otro {
+            background: #6B7280;
         }
     </style>
 </head>
 
 <body>
     <?php
-    // Obtiene el nombre del archivo de la URL
     $currentPage = basename($_SERVER['REQUEST_URI']);
     $rol = $_SESSION['rol'];
     ?>
@@ -277,7 +387,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     <img src="../../assets/images/logo_mattel.png" alt="logo">
                 </li>
 
-                <!-- DASHBOARD -->
                 <li class="<?php echo ($currentPage == 'dashboard.php') ? 'active' : ''; ?>">
                     <a href="../main/dashboard.php" data-tooltip="Inicio">
                         <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
@@ -286,7 +395,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                 </li>
 
                 <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
-                    <!-- MÁQUINAS -->
                     <?php $maquinasPages = ['index_maquinas.php', 'crear_maquinas.php', 'editar_maquinas.php', 'ver_maquinas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $maquinasPages) ? 'active' : ''; ?>">
                         <a href="../maquinas/index_maquinas.php" data-tooltip="Máquinas">
@@ -295,7 +403,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                         </a>
                     </li>
 
-                    <!-- LÍNEAS -->
                     <?php $lineasPages = ['index_lineas.php', 'crear_lineas.php', 'editar_lineas.php', 'ver_lineas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $lineasPages) ? 'active' : ''; ?>">
                         <a href="../lineas/index_lineas.php" data-tooltip="Líneas">
@@ -306,7 +413,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                 <?php endif; ?>
 
                 <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
-                    <!-- MANTENIMIENTO -->
                     <?php $mantenimientoPages = ['index_mantenimiento.php', 'crear_mantenimiento.php', 'editar_mantenimiento.php', 'ver_mantenimiento.php']; ?>
                     <li class="<?php echo in_array($currentPage, $mantenimientoPages) ? 'active' : ''; ?>">
                         <a href="../mantenimiento/index_mantenimiento.php" data-tooltip="Mantenimiento">
@@ -315,7 +421,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                         </a>
                     </li>
 
-                    <!-- TICKETS -->
                     <?php $ticketsPages = ['index_tickets.php', 'crear_tickets.php', 'editar_tickets.php', 'ver_tickets.php']; ?>
                     <li class="<?php echo in_array($currentPage, $ticketsPages) ? 'active' : ''; ?>">
                         <a href="../tickets/index_tickets.php" data-tooltip="Tickets">
@@ -326,7 +431,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                 <?php endif; ?>
 
                 <?php if ($rol == 'Administrador'): ?>
-                    <!-- USUARIOS -->
                     <?php $usuariosPages = ['index_usuarios.php', 'crear_usuarios.php', 'editar_usuarios.php', 'ver_usuarios.php']; ?>
                     <li class="<?php echo in_array($currentPage, $usuariosPages) ? 'active' : ''; ?>">
                         <a href="../usuarios/index_usuarios.php" data-tooltip="Usuarios">
@@ -336,7 +440,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     </li>
                 <?php endif; ?>
 
-                <!-- CERRAR SESIÓN -->
                 <li>
                     <a href="#" onclick="showLogoutModal()" data-tooltip="Cerrar Sesión">
                         <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
@@ -345,9 +448,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
                 </li>
             </ul>
         </div>
-
     </div>
-
 
     <div class="main">
         <div class="topbar">
@@ -366,59 +467,58 @@ if (!isset($_SESSION['usuarioingresando'])) {
             </div>
         </div>
 
-        <div class="usuarios-container">
+        <div class="mantenimientos-container">
             <div class="header-section">
-                <h2 class="section-title">Usuarios</h2>
-                <div style="display: flex; gap: 10px;">
-                    <a href="crear_usuarios.php" class="btn-new">
-                        <ion-icon name="add-circle-outline"></ion-icon> Nuevo Usuario
-                    </a>
-                </div>
+                <h2 class="section-title">Mantenimientos</h2>
+                <a href="crear_mantenimiento.php" class="btn-new">
+                    <ion-icon name="add-circle-outline"></ion-icon> Nuevo Mantenimiento
+                </a>
             </div>
-            <!-- Tabla HTML -->
-            <table id="tablaUsuarios" class="display" style="width:100%">
+
+            <?php if (isset($_SESSION['mensaje'])): ?>
+                <div class="alert alert-<?php echo $_SESSION['tipo_mensaje']; ?>" style="padding: 15px; margin-bottom: 20px; border-radius: 8px; <?php echo $_SESSION['tipo_mensaje'] == 'success' ? 'background: #d1fae5; color: #065f46; border-left: 4px solid #10B981;' : 'background: #fee2e2; color: #991b1b; border-left: 4px solid #DC2626;'; ?>">
+                    <?php echo htmlspecialchars($_SESSION['mensaje']); ?>
+                </div>
+                <?php 
+                unset($_SESSION['mensaje']);
+                unset($_SESSION['tipo_mensaje']);
+                ?>
+            <?php endif; ?>
+
+            <table id="mantenimientosTable" class="display">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Correo</th>
-                        <th>Usuario</th>
-                        <th>Teléfono</th>
-                        <th>Rol</th>
-                        <th>Planta</th>
-                        <th>Estado</th>
+                        <th>Máquina</th>
+                        <th>Código</th>
+                        <th>Tipo</th>
+                        <th>Fecha</th>
+                        <th>Responsable</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Los datos se cargarán dinámicamente -->
                 </tbody>
             </table>
         </div>
     </div>
 
-
-
-
-
-    <div id="contactModal" class="modal">
+    <!-- Modal de confirmación de eliminación -->
+    <div id="deleteModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="close-btn" id="closeContact">&times;</span>
-                <h2>Información</h2>
+                <span class="close-btn" onclick="cerrarModalEliminar()">&times;</span>
+                <h2>Eliminar Mantenimiento</h2>
             </div>
             <div class="modal-body">
-                <h3><?php echo '' . $_SESSION["usuarioingresando"] . ''; ?></h3>
-                <p></p>
-                <a class="socialIcon" href="https://github.com/MeetsEvil" target="_blank"><i class="fab fa-github"></i></a>
-                <a class="socialIcon" href="https://www.linkedin.com/in/orlandojgarciap-17a612289/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a class="socialIcon" href="mailto:orlandojgarciap@gmail.com" target="_blank"><i class="fas fa-envelope"></i></a>
+                <p>¿Estás seguro de que deseas eliminar este registro de mantenimiento? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="cerrarModalEliminar()">Cancelar</button>
+                <a href="#" id="btnConfirmarEliminar" class="btn-confirm">Eliminar</a>
             </div>
         </div>
     </div>
-    </div>
-
 
     <div id="logoutModal" class="modal">
         <div class="modal-content">
@@ -436,108 +536,45 @@ if (!isset($_SESSION['usuarioingresando'])) {
         </div>
     </div>
 
-
-    <!-- Modal de confirmación de eliminación -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close-btn" onclick="cerrarModalEliminar()">&times;</span>
-                <h2>Desactivar Usuario</h2>
-            </div>
-            <div class="modal-body">
-                <p style="color: #000000ff; font-size: 1em;">¿Estás seguro de que deseas desactivar este usuario?</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="cerrarModalEliminar()">Cancelar</button>
-                <a href="#" id="btnConfirmarEliminar" class="btn-confirm" style="background: rgba(177, 20, 20, 1);">Desactivar</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de éxito al eliminar -->
-    <div id="successDeleteModal" class="modal">
-        <div class="modal-content success">
-            <div class="modal-body">
-                <h2 class="success-title">¡Usuario Desactivado!</h2>
-                <p style="margin-top: 8px;">El usuario ha sido desactivado correctamente.</p>
-            </div>
-        </div>
-    </div>
-
     <script>
-        let tablaUsuarios;
-        let mostrandoInactivos = false;
-
         $(document).ready(function() {
-            cargarTabla(false);
-
-            // Verificar si hay éxito al eliminar
-            <?php if (isset($_SESSION['success_delete']) && $_SESSION['success_delete'] === true): ?>
-                document.getElementById('successDeleteModal').style.display = 'flex';
-                setTimeout(function() {
-                    document.getElementById('successDeleteModal').style.display = 'none';
-                }, 2000);
-                <?php unset($_SESSION['success_delete']); ?>
-            <?php endif; ?>
-        });
-
-        function cargarTabla(inactivos) {
-            if (tablaUsuarios) {
-                tablaUsuarios.destroy();
-            }
-
-            const url = inactivos ? 'get_usuarios.php?inactivos=1' : 'get_usuarios.php';
-
-            tablaUsuarios = $('#tablaUsuarios').DataTable({
-                "ajax": {
-                    "url": url,
-                    "dataSrc": ""
+            $('#mantenimientosTable').DataTable({
+                ajax: {
+                    url: 'get_mantenimientos.php',
+                    dataSrc: ''
                 },
-                "columns": [{
-                        "data": "id_usuario"
-                    },
+                columns: [
+                    { data: 'id_mantenimiento' },
+                    { data: 'codigo_maquina' },
+                    { data: 'nombre_linea' },
                     {
-                        "data": "nombre"
-                    },
-                    {
-                        "data": "apellido"
-                    },
-                    {
-                        "data": "email"
-                    },
-                    {
-                        "data": "usuario"
-                    },
-                    {
-                        "data": "telefono"
-                    },
-                    {
-                        "data": "rol"
-                    },
-                    {
-                        "data": "planta"
-                    },
-                    {
-                        "data": "estado",
-                        "render": function(data) {
-                            if (data === 'Activo') {
-                                return '<span style="color: green; font-weight: bold;">●</span> Activo';
-                            } else {
-                                return '<span style="color: red; font-weight: bold;">●</span> Inactivo';
-                            }
+                        data: 'nombre_tipo',
+                        render: function(data) {
+                            let clase = 'tipo-otro';
+                            if (data === 'Preventivo') clase = 'tipo-preventivo';
+                            else if (data === 'Correctivo') clase = 'tipo-correctivo';
+                            else if (data === 'Predictivo') clase = 'tipo-predictivo';
+                            return `<span class="tipo-badge ${clase}">${data}</span>`;
                         }
                     },
                     {
-                        "data": "acciones"
-                    }
+                        data: 'fecha_mantenimiento',
+                        render: function(data) {
+                            const fecha = new Date(data);
+                            return fecha.toLocaleDateString('es-ES') + ' ' + fecha.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                        }
+                    },
+                    { data: 'tecnico_responsable' },
+                    { data: 'acciones' }
                 ],
-                "pageLength": 10,
-                "lengthMenu": [10, 25, 50, 100],
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
                 },
-                "dom": 'Bfrtip',
-                "buttons": [{
+                dom: 'Bfrtip',
+                buttons: [
+                    {
                         extend: 'copyHtml5',
                         text: '<i class="fas fa-copy"></i> Copiar',
                         className: 'btn-dt'
@@ -553,32 +590,21 @@ if (!isset($_SESSION['usuarioingresando'])) {
                         className: 'btn-dt',
                         orientation: 'landscape',
                         pageSize: 'A4'
-                    },
-                    {
-                        text: inactivos ? '<i class="fas fa-eye"></i> Ver Activos' : '<i class="fas fa-eye-slash"></i> Ver Inactivos',
-                        className: 'btn-dt',
-                        action: function() {
-                            mostrandoInactivos = !mostrandoInactivos;
-                            cargarTabla(mostrandoInactivos);
-                        }
                     }
                 ],
-                "order": [
-                    [0, 'asc']
-                ]
+                order: [[4, 'desc']]
             });
-        }
+        });
 
         function confirmarEliminar(id) {
             document.getElementById('deleteModal').style.display = 'flex';
-            document.getElementById('btnConfirmarEliminar').href = 'eliminar_usuario.php?id=' + id;
+            document.getElementById('btnConfirmarEliminar').href = 'eliminar_mantenimiento.php?id=' + id;
         }
 
         function cerrarModalEliminar() {
             document.getElementById('deleteModal').style.display = 'none';
         }
 
-        // Cerrar modal al hacer click fuera
         window.onclick = function(event) {
             const deleteModal = document.getElementById('deleteModal');
             if (event.target == deleteModal) {

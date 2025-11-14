@@ -59,25 +59,103 @@ if (!isset($_SESSION['usuarioingresando'])) {
         }
 
         .btn-new {
-            background: linear-gradient(90deg, #932323, #4d0d0d);
-            border: none;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 10px 20px;
-            border-radius: 50px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s;
+            background: rgba(177, 20, 20, 1) !important;
+            border: none !important;
+            color: white !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 5px !important;
+            padding: 10px 20px !important;
+            border-radius: 50px !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+            transition: all 0.3s ease !important;
         }
 
         .btn-new:hover {
-            background: linear-gradient(90deg, #7b1f1f, #430c0c);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transform: translateY(-2px);
+            background: rgba(146, 17, 17, 1) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        /* Tabs de Estados */
+        .tabs-estados {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+
+        .tab-estado {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.1em;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+        }
+
+        .tab-estado:hover {
+            transform: translateY(-3px);
+        }
+
+        .tab-estado.active {
+            background: white;
+            border-bottom: 4px solid;
+        }
+
+        .tab-estado.pendiente {
+            color: #DC2626;
+        }
+
+        .tab-estado.pendiente.active {
+            border-bottom-color: #DC2626;
+            box-shadow: 0 -3px 0 #DC2626 inset;
+        }
+
+        .tab-estado.progreso {
+            color: #F59E0B;
+        }
+
+        .tab-estado.progreso.active {
+            border-bottom-color: #F59E0B;
+            box-shadow: 0 -3px 0 #F59E0B inset;
+        }
+
+        .tab-estado.validacion {
+            color: #3B82F6;
+        }
+
+        .tab-estado.validacion.active {
+            border-bottom-color: #3B82F6;
+            box-shadow: 0 -3px 0 #3B82F6 inset;
+        }
+
+        .tab-estado.finalizado {
+            color: #10B981;
+        }
+
+        .tab-estado.finalizado.active {
+            border-bottom-color: #10B981;
+            box-shadow: 0 -3px 0 #10B981 inset;
+        }
+
+        .tab-count {
+            display: inline-block;
+            background: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-left: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Filtros */
@@ -109,92 +187,31 @@ if (!isset($_SESSION['usuarioingresando'])) {
             cursor: pointer;
         }
 
-        /* Kanban Board */
-        .kanban-board {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            height: calc(100% - 150px);
-            overflow: hidden;
-        }
-
-        .kanban-column {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .kanban-column.pendiente {
-            border: 3px solid #DC2626;
-        }
-
-        .kanban-column.progreso {
-            border: 3px solid #F59E0B;
-        }
-
-        .kanban-column.validacion {
-            border: 3px solid #3B82F6;
-        }
-
-        .kanban-column.finalizado {
-            border: 3px solid #10B981;
-        }
-
-        .column-header {
-            font-weight: 700;
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .column-header .count {
-            background: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.9em;
-        }
-
-        .pendiente .column-header {
-            color: #DC2626;
-        }
-
-        .progreso .column-header {
-            color: #F59E0B;
-        }
-
-        .validacion .column-header {
-            color: #3B82F6;
-        }
-
-        .finalizado .column-header {
-            color: #10B981;
-        }
-
-        .tickets-list {
+        /* Lista de Tickets */
+        .tickets-list-container {
             flex: 1;
             overflow-y: auto;
-            padding-right: 5px;
+            padding: 10px;
         }
 
-        .tickets-list::-webkit-scrollbar {
-            width: 6px;
+        .tickets-list-container::-webkit-scrollbar {
+            width: 8px;
         }
 
-        .tickets-list::-webkit-scrollbar-track {
+        .tickets-list-container::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 10px;
         }
 
-        .tickets-list::-webkit-scrollbar-thumb {
+        .tickets-list-container::-webkit-scrollbar-thumb {
             background: #932323;
             border-radius: 10px;
+        }
+
+        .tickets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
         }
 
         /* Tarjeta de Ticket */
@@ -202,10 +219,26 @@ if (!isset($_SESSION['usuarioingresando'])) {
             background: white;
             border-radius: 8px;
             padding: 15px;
-            margin-bottom: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .ticket-card.pendiente {
+            border-left-color: #DC2626;
+        }
+
+        .ticket-card.progreso {
+            border-left-color: #F59E0B;
+        }
+
+        .ticket-card.validacion {
+            border-left-color: #3B82F6;
+        }
+
+        .ticket-card.finalizado {
+            border-left-color: #10B981;
         }
 
         .ticket-card:hover {
@@ -304,16 +337,66 @@ if (!isset($_SESSION['usuarioingresando'])) {
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        .empty-column {
+        .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             color: #999;
         }
 
-        .empty-column ion-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
+        .empty-state ion-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
             opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border-left: 4px solid #10B981;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            border-left: 4px solid #DC2626;
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-left: 4px solid #F59E0B;
+            color: #92400e;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-left: 4px solid #3B82F6;
+            color: #1e40af;
         }
     </style>
 </head>
@@ -419,6 +502,37 @@ if (!isset($_SESSION['usuarioingresando'])) {
                 </a>
             </div>
 
+            <?php if (isset($_SESSION['mensaje'])): ?>
+                <div class="alert alert-<?php echo $_SESSION['tipo_mensaje']; ?>" id="mensaje-alerta">
+                    <ion-icon name="<?php echo $_SESSION['tipo_mensaje'] == 'success' ? 'checkmark-circle-outline' : 'alert-circle-outline'; ?>" style="font-size: 24px;"></ion-icon>
+                    <span><?php echo htmlspecialchars($_SESSION['mensaje']); ?></span>
+                </div>
+                <?php 
+                unset($_SESSION['mensaje']);
+                unset($_SESSION['tipo_mensaje']);
+                ?>
+            <?php endif; ?>
+
+            <!-- Tabs de Estados -->
+            <div class="tabs-estados">
+                <div class="tab-estado pendiente active" data-estado="1" onclick="cambiarEstado(1)">
+                    <span>Pendientes</span>
+                    <span class="tab-count" id="count-pendiente">0</span>
+                </div>
+                <div class="tab-estado progreso" data-estado="2" onclick="cambiarEstado(2)">
+                    <span>En Progreso</span>
+                    <span class="tab-count" id="count-progreso">0</span>
+                </div>
+                <div class="tab-estado validacion" data-estado="3" onclick="cambiarEstado(3)">
+                    <span>En Validación</span>
+                    <span class="tab-count" id="count-validacion">0</span>
+                </div>
+                <div class="tab-estado finalizado" data-estado="4" onclick="cambiarEstado(4)">
+                    <span>Finalizados</span>
+                    <span class="tab-count" id="count-finalizado">0</span>
+                </div>
+            </div>
+
             <!-- Filtros -->
             <div class="filters-section">
                 <input type="text" id="searchTicket" class="filter-input" placeholder="Buscar por código o máquina...">
@@ -429,66 +543,14 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     <option value="Media">Media</option>
                     <option value="Baja">Baja</option>
                 </select>
-                <button onclick="aplicarFiltros()" class="btn-new" style="padding: 8px 20px;">
-                    <ion-icon name="filter-outline"></ion-icon> Filtrar
-                </button>
             </div>
 
-            <!-- Kanban Board -->
-            <div class="kanban-board">
-                <!-- Columna: Pendientes -->
-                <div class="kanban-column pendiente">
-                    <div class="column-header">
-                        <span>Pendientes</span>
-                        <span class="count" id="count-pendiente">0</span>
-                    </div>
-                    <div class="tickets-list" id="tickets-pendiente">
-                        <div class="empty-column">
-                            <ion-icon name="time-outline"></ion-icon>
-                            <p>No hay tickets pendientes</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Columna: En Progreso -->
-                <div class="kanban-column progreso">
-                    <div class="column-header">
-                        <span>En Progreso</span>
-                        <span class="count" id="count-progreso">0</span>
-                    </div>
-                    <div class="tickets-list" id="tickets-progreso">
-                        <div class="empty-column">
-                            <ion-icon name="construct-outline"></ion-icon>
-                            <p>No hay tickets en progreso</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Columna: En Validación -->
-                <div class="kanban-column validacion">
-                    <div class="column-header">
-                        <span>En Validación</span>
-                        <span class="count" id="count-validacion">0</span>
-                    </div>
-                    <div class="tickets-list" id="tickets-validacion">
-                        <div class="empty-column">
-                            <ion-icon name="checkmark-done-outline"></ion-icon>
-                            <p>No hay tickets en validación</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Columna: Finalizados -->
-                <div class="kanban-column finalizado">
-                    <div class="column-header">
-                        <span>Finalizados</span>
-                        <span class="count" id="count-finalizado">0</span>
-                    </div>
-                    <div class="tickets-list" id="tickets-finalizado">
-                        <div class="empty-column">
-                            <ion-icon name="checkmark-circle-outline"></ion-icon>
-                            <p>No hay tickets finalizados</p>
-                        </div>
+            <!-- Lista de Tickets -->
+            <div class="tickets-list-container">
+                <div class="tickets-grid" id="tickets-grid">
+                    <div class="empty-state">
+                        <ion-icon name="document-outline"></ion-icon>
+                        <p>Cargando tickets...</p>
                     </div>
                 </div>
             </div>
@@ -513,11 +575,16 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
     <script>
         let ticketsData = [];
-        let filteredData = [];
+        let estadoActual = 1; // Por defecto: Pendientes
 
         $(document).ready(function() {
             cargarTickets();
             setInterval(cargarTickets, 30000); // Recargar cada 30 segundos
+
+            // Auto-ocultar mensaje después de 5 segundos
+            setTimeout(function() {
+                $('#mensaje-alerta').fadeOut('slow');
+            }, 5000);
         });
 
         function cargarTickets() {
@@ -527,76 +594,108 @@ if (!isset($_SESSION['usuarioingresando'])) {
                 dataType: 'json',
                 success: function(data) {
                     ticketsData = data;
-                    filteredData = data;
+                    actualizarContadores();
                     renderizarTickets();
                 },
                 error: function(xhr, status, error) {
                     console.error('Error al cargar tickets:', error);
+                    $('#tickets-grid').html(`
+                        <div class="empty-state">
+                            <ion-icon name="alert-circle-outline"></ion-icon>
+                            <p>Error al cargar los tickets</p>
+                        </div>
+                    `);
                 }
             });
+        }
+
+        function actualizarContadores() {
+            const pendientes = ticketsData.filter(t => t.id_estado == 1).length;
+            const progreso = ticketsData.filter(t => t.id_estado == 2).length;
+            const validacion = ticketsData.filter(t => t.id_estado == 3).length;
+            const finalizados = ticketsData.filter(t => t.id_estado == 4).length;
+
+            $('#count-pendiente').text(pendientes);
+            $('#count-progreso').text(progreso);
+            $('#count-validacion').text(validacion);
+            $('#count-finalizado').text(finalizados);
+        }
+
+        function cambiarEstado(estado) {
+            estadoActual = estado;
+            
+            // Actualizar tabs activos
+            $('.tab-estado').removeClass('active');
+            $(`.tab-estado[data-estado="${estado}"]`).addClass('active');
+            
+            renderizarTickets();
         }
 
         function aplicarFiltros() {
             const searchTerm = $('#searchTicket').val().toLowerCase();
             const prioridad = $('#filterPrioridad').val();
 
-            filteredData = ticketsData.filter(ticket => {
+            let filteredData = ticketsData.filter(ticket => {
+                // Filtrar por estado actual
+                if (ticket.id_estado != estadoActual) return false;
+
+                // Filtrar por búsqueda
                 const matchSearch = searchTerm === '' || 
                     ticket.codigo_ticket.toLowerCase().includes(searchTerm) ||
                     ticket.codigo_maquina.toLowerCase().includes(searchTerm);
                 
+                // Filtrar por prioridad
                 const matchPrioridad = prioridad === '' || ticket.prioridad === prioridad;
 
                 return matchSearch && matchPrioridad;
             });
 
-            renderizarTickets();
+            renderizarTicketsGrid(filteredData);
         }
 
         function renderizarTickets() {
-            // Limpiar columnas
-            $('#tickets-pendiente, #tickets-progreso, #tickets-validacion, #tickets-finalizado').empty();
-
-            // Agrupar por estado
-            const pendientes = filteredData.filter(t => t.id_estado == 1);
-            const progreso = filteredData.filter(t => t.id_estado == 2);
-            const validacion = filteredData.filter(t => t.id_estado == 3);
-            const finalizados = filteredData.filter(t => t.id_estado == 4);
-
-            // Actualizar contadores
-            $('#count-pendiente').text(pendientes.length);
-            $('#count-progreso').text(progreso.length);
-            $('#count-validacion').text(validacion.length);
-            $('#count-finalizado').text(finalizados.length);
-
-            // Renderizar cada columna
-            renderizarColumna(pendientes, '#tickets-pendiente', 'pendiente');
-            renderizarColumna(progreso, '#tickets-progreso', 'progreso');
-            renderizarColumna(validacion, '#tickets-validacion', 'validacion');
-            renderizarColumna(finalizados, '#tickets-finalizado', 'finalizado');
+            const ticketsFiltrados = ticketsData.filter(t => t.id_estado == estadoActual);
+            renderizarTicketsGrid(ticketsFiltrados);
         }
 
-        function renderizarColumna(tickets, selector, tipo) {
-            const container = $(selector);
+        function renderizarTicketsGrid(tickets) {
+            const container = $('#tickets-grid');
+            container.empty();
 
             if (tickets.length === 0) {
                 const mensajes = {
-                    'pendiente': 'No hay tickets pendientes',
-                    'progreso': 'No hay tickets en progreso',
-                    'validacion': 'No hay tickets en validación',
-                    'finalizado': 'No hay tickets finalizados'
+                    1: 'No hay tickets pendientes',
+                    2: 'No hay tickets en progreso',
+                    3: 'No hay tickets en validación',
+                    4: 'No hay tickets finalizados'
                 };
+                
+                const iconos = {
+                    1: 'time-outline',
+                    2: 'construct-outline',
+                    3: 'checkmark-done-outline',
+                    4: 'checkmark-circle-outline'
+                };
+
                 container.html(`
-                    <div class="empty-column">
-                        <ion-icon name="document-outline"></ion-icon>
-                        <p>${mensajes[tipo]}</p>
+                    <div class="empty-state">
+                        <ion-icon name="${iconos[estadoActual]}"></ion-icon>
+                        <p>${mensajes[estadoActual]}</p>
                     </div>
                 `);
                 return;
             }
 
+            const estadoClasses = {
+                1: 'pendiente',
+                2: 'progreso',
+                3: 'validacion',
+                4: 'finalizado'
+            };
+
             tickets.forEach(ticket => {
                 const prioridadClass = 'prioridad-' + ticket.prioridad.toLowerCase();
+                const estadoClass = estadoClasses[ticket.id_estado];
                 const rol = '<?php echo $_SESSION['rol']; ?>';
                 
                 let acciones = `
@@ -606,8 +705,8 @@ if (!isset($_SESSION['usuarioingresando'])) {
                         </a>
                 `;
 
-                // Botón Editar (solo Admin y Técnico)
-                if (rol === 'Administrador' || rol === 'Técnico') {
+                // Botón Editar (solo Admin y Técnico, y NO en tickets finalizados)
+                if ((rol === 'Administrador' || rol === 'Técnico') && estadoActual != 4) {
                     acciones += `
                         <a href="editar_tickets.php?id=${ticket.id_ticket}" class="btn-action-small btn-editar">
                             <ion-icon name="create-outline"></ion-icon> Editar
@@ -616,7 +715,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
                 }
 
                 // Botón Eliminar (solo Admin en Pendientes)
-                if (rol === 'Administrador' && tipo === 'pendiente') {
+                if (rol === 'Administrador' && estadoActual == 1) {
                     acciones += `
                         <a href="#" onclick="confirmarEliminar(${ticket.id_ticket}); return false;" class="btn-action-small btn-eliminar">
                             <ion-icon name="trash-outline"></ion-icon>
@@ -629,12 +728,16 @@ if (!isset($_SESSION['usuarioingresando'])) {
                 const responsable = ticket.responsable ? 
                     `<div class="ticket-responsable"><ion-icon name="person-outline"></ion-icon> ${ticket.responsable}</div>` : '';
 
+                const tieneFoto = ticket.foto_url ? 
+                    `<div class="ticket-info" style="color: #3B82F6;"><ion-icon name="image-outline"></ion-icon> Con foto</div>` : '';
+
                 const card = `
-                    <div class="ticket-card" onclick="window.location.href='ver_tickets.php?id=${ticket.id_ticket}'">
+                    <div class="ticket-card ${estadoClass}" onclick="window.location.href='ver_tickets.php?id=${ticket.id_ticket}'">
                         <div class="ticket-id">${ticket.codigo_ticket}</div>
                         <div class="ticket-maquina">${ticket.codigo_maquina}</div>
                         <div class="ticket-info"><ion-icon name="business-outline"></ion-icon> ${ticket.planta}</div>
                         <div class="ticket-info"><ion-icon name="git-network-outline"></ion-icon> ${ticket.linea}</div>
+                        ${tieneFoto}
                         ${responsable}
                         <span class="ticket-prioridad ${prioridadClass}">${ticket.prioridad}</span>
                         ${acciones}
