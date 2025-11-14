@@ -29,8 +29,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
         rel="stylesheet">
-<<<<<<< Updated upstream
-=======
 
     <style>
         .usuarios-container {
@@ -266,7 +264,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
             }
         }
     </style>
->>>>>>> Stashed changes
 </head>
 
 <body>
@@ -377,26 +374,13 @@ if (!isset($_SESSION['usuarioingresando'])) {
             <div class="header-section">
                 <h2 class="section-title">Usuarios</h2>
                 <div style="display: flex; gap: 10px;">
-<<<<<<< Updated upstream
-                    <a href="exportar_completo.php"
-                        style="background: linear-gradient(90deg,rgba(224, 90, 90, 1),rgba(177, 20, 20, 1)); border: none; color: white; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 10px 20px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">
-
-
-                        <ion-icon name="download-outline"></ion-icon> Exportar Completo
-                    </a>
-=======
->>>>>>> Stashed changes
                     <a href="crear_usuarios.php" class="btn-new">
                         <ion-icon name="add-circle-outline"></ion-icon> Nuevo Usuario
                     </a>
                 </div>
             </div>
             <!-- Tabla HTML -->
-<<<<<<< Updated upstream
-            <table id="tablaUsuarios" class="tabla-usuarios" style="width:100%">
-=======
             <table id="tablaUsuarios" class="display" style="width:100%">
->>>>>>> Stashed changes
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -406,68 +390,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                         <th>Usuario</th>
                         <th>Teléfono</th>
                         <th>Rol</th>
-<<<<<<< Updated upstream
-                        <th>Fecha de creación</th>
-                    </tr>
-                </thead>
-            </table>
-
-            <!-- Script SOLO una vez
-            <script>
-                $('#tablaBeneficiarios').DataTable({
-                    "ajax": "get_beneficiarios.php",
-                    "columns": [{
-                            "data": "id_beneficiario"
-                        },
-                        {
-                            "data": "matricula"
-                        },
-                        {
-                            "data": "nombre_completo"
-                        },
-                        {
-                            "data": "edad"
-                        },
-                        {
-                            "data": "genero"
-                        },
-                        {
-                            "data": "tipo_apoyo"
-                        },
-                        {
-                            "data": "ultima_actualizacion"
-                        },
-                        {
-                            "data": "opciones"
-                        }
-                    ],
-                    "pageLength": 8, // <--- Aquí se define la paginación de 8 registros
-                    "lengthMenu": [8, 16, 32, 50], // opcional: menú para cambiar cantidad
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
-                    },
-                    dom: 'Bfrtip', // Activa los botones
-                    buttons: [{
-                            extend: 'copyHtml5',
-                            text: 'Copiar',
-                            className: 'btn btn-sm btn-secondary'
-                        },
-                        {
-                            extend: 'excelHtml5',
-                            text: 'Excel',
-                            className: 'btn btn-sm btn-success'
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            text: 'PDF',
-                            className: 'btn btn-sm btn-danger',
-                            orientation: 'landscape', // opcional
-                            pageSize: 'A4' // opcional
-                        }
-                    ]
-                });
-            </script> -->
-=======
                         <th>Planta</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -477,7 +399,6 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     <!-- Los datos se cargarán dinámicamente -->
                 </tbody>
             </table>
->>>>>>> Stashed changes
         </div>
     </div>
 
