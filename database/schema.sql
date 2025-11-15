@@ -129,6 +129,7 @@ CREATE TABLE maquinas (
     id_linea INT NOT NULL,
     area VARCHAR(100) COMMENT 'Área dentro de la planta',
     imagen VARCHAR(255) DEFAULT 'imgMaquinas/no-maquina.png' COMMENT 'Ruta de la imagen de la máquina',
+    codigoQR VARCHAR(100) COMMENT 'Código QR único: ID + código de máquina (ej: 3MAQ-INY-005)',
     fecha_instalacion DATE,
     estado ENUM('Activa', 'Inactiva', 'Mantenimiento', 'Fuera de servicio') DEFAULT 'Activa',
     observaciones TEXT,
@@ -141,6 +142,7 @@ CREATE TABLE maquinas (
     FOREIGN KEY (created_by) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE SET NULL,
     
     INDEX idx_codigo (codigo_maquina),
+    INDEX idx_codigoqr (codigoQR),
     INDEX idx_planta (id_planta),
     INDEX idx_linea (id_linea),
     INDEX idx_estado (estado)
@@ -202,6 +204,7 @@ CREATE TABLE tickets (
     tiempo_total INT COMMENT 'Minutos desde creación hasta cierre',
     
     observaciones TEXT,
+    visible TINYINT(1) DEFAULT 1 COMMENT 'Si es 0, el ticket está oculto (eliminado lógicamente)',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
@@ -217,7 +220,8 @@ CREATE TABLE tickets (
     INDEX idx_estado (id_estado),
     INDEX idx_prioridad (id_prioridad),
     INDEX idx_tecnico (id_tecnico_responsable),
-    INDEX idx_fecha_creacion (fecha_creacion)
+    INDEX idx_fecha_creacion (fecha_creacion),
+    INDEX idx_visible (visible)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabla auxiliar: ticket_tecnicos (para futuro soporte de múltiples técnicos)

@@ -107,7 +107,7 @@ while ($row = mysqli_fetch_assoc($result_tecnicos)) {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             width: calc(95% - 100px);
             min-height: 95px;
-            height: 740px;
+            /* height: 740px; */
             display: flex;
             flex-direction: column;
             overflow: hidden;

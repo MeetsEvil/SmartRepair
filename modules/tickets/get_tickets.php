@@ -9,7 +9,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
 require_once '../../config/db.php';
 
-// Query para obtener todos los tickets activos con información relacionada
+// Query para obtener todos los tickets visibles con información relacionada
 $query = "SELECT 
             t.id_ticket,
             t.codigo_ticket,
@@ -32,6 +32,7 @@ $query = "SELECT
           INNER JOIN prioridades pr ON t.id_prioridad = pr.id_prioridad
           LEFT JOIN usuarios u ON t.id_tecnico_responsable = u.id_usuario
           INNER JOIN estados_ticket e ON t.id_estado = e.id_estado
+          WHERE t.visible = 1
           ORDER BY 
             pr.nivel ASC,
             t.fecha_creacion DESC";

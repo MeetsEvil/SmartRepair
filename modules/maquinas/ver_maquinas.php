@@ -86,6 +86,7 @@ mysqli_close($conexion);
     <link rel="stylesheet" href="../../assets/css/sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         .view-container {
@@ -314,7 +315,6 @@ mysqli_close($conexion);
 
         .machine-image-section {
             margin-bottom: 30px;
-            text-align: center;
             padding: 25px;
             background: #f8f9fa;
             border-radius: 12px;
@@ -324,25 +324,94 @@ mysqli_close($conexion);
             color: #932323;
             margin-bottom: 20px;
             font-size: 1.3em;
+            text-align: center;
+        }
+
+        .image-qr-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
         }
 
         .machine-image-container {
-            display: inline-block;
-            max-width: 500px;
-            width: 100%;
-            border: 3px solid #932323;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(147, 35, 35, 0.2);
-            background: white;
+            text-align: center;
         }
 
         .machine-image-container img {
-            width: 100%;
+            max-width: 100%;
             height: auto;
             display: block;
-            object-fit: contain;
+            margin: 0 auto;
+            border: 3px solid #932323;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(147, 35, 35, 0.2);
+            background: white;
+            padding: 10px;
             max-height: 400px;
+            object-fit: contain;
+        }
+
+        .qr-code-container {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border: 3px solid #932323;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(147, 35, 35, 0.2);
+        }
+
+        .qr-code-container h4 {
+            color: #932323;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        #qrcode {
+            display: inline-block;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .qr-code-text {
+            margin-top: 15px;
+            padding: 10px;
+            /* background: #f8f9fa; */
+            background: transparent;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.1em;
+            color: #932323;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .qr-download-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #2196F3, #0D47A1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qr-download-btn:hover {
+            background: linear-gradient(90deg, #1976D2, #0A3A7A);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 992px) {
+            .image-qr-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 1200px) {
@@ -466,16 +535,36 @@ mysqli_close($conexion);
             </div>
 
             <div class="view-content">
-                <!-- Imagen de la Máquina -->
+                <!-- Imagen y Código QR de la Máquina -->
                 <div class="machine-image-section">
                     <h3>
                         <ion-icon name="camera-outline" style="vertical-align: middle;"></ion-icon>
-                        Fotografía de la Máquina
+                        Fotografía y Código QR
                     </h3>
-                    <div class="machine-image-container">
-                        <img src="../../<?php echo htmlspecialchars($maquina['imagen']); ?>" 
-                             alt="Imagen de <?php echo htmlspecialchars($maquina['codigo_maquina']); ?>"
-                             onerror="this.src='../../imgMaquinas/no-maquina.png'">
+                    <div class="image-qr-container">
+                        <!-- Imagen de la Máquina -->
+                        <div class="machine-image-container">
+                            <h4 style="color: #932323; margin-bottom: 15px;">Fotografía</h4>
+                            <img src="../../<?php echo htmlspecialchars($maquina['imagen']); ?>" 
+                                 alt="Imagen de <?php echo htmlspecialchars($maquina['codigo_maquina']); ?>"
+                                 onerror="this.src='../../imgMaquinas/no-maquina.png'">
+                        </div>
+
+                        <!-- Código QR -->
+                        <div class="qr-code-container">
+                            <h4>
+                                <ion-icon name="qr-code-outline" style="vertical-align: middle;"></ion-icon>
+                                Código QR
+                            </h4>
+                            <div id="qrcode"></div>
+                            <div class="qr-code-text">
+                                <?php echo htmlspecialchars( $maquina['codigo_maquina']); ?>
+                            </div>
+                            <button class="qr-download-btn" onclick="descargarQR()">
+                                <ion-icon name="download-outline"></ion-icon>
+                                Descargar QR
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -663,6 +752,13 @@ mysqli_close($conexion);
                             <ion-icon name="create-outline"></ion-icon> Editar Máquina
                         </a>
                     <?php endif; ?>
+                    
+                    <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
+                        <a href="../tickets/crear_ticket_maquina.php?id_maquina=<?php echo $maquina['id_maquina']; ?>" class="btn-action" style="background: linear-gradient(90deg, #FF5722, #D84315); color: white;">
+                            <ion-icon name="alert-circle-outline"></ion-icon> Reportar Falla
+                        </a>
+                    <?php endif; ?>
+                    
                     <a href="index_maquinas.php" class="btn-action btn-back">
                         <ion-icon name="list-outline"></ion-icon> Ver Todas las Máquinas
                     </a>
@@ -686,6 +782,47 @@ mysqli_close($conexion);
             </div>
         </div>
     </div>
+
+    <script>
+        // Generar código QR al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const codigoQR = '<?php echo htmlspecialchars($maquina['codigoQR'] ?? $maquina['id_maquina'] . $maquina['codigo_maquina']); ?>';
+            
+            // Generar QR con QRCode.js
+            new QRCode(document.getElementById('qrcode'), {
+                text: codigoQR,
+                width: 200,
+                height: 200,
+                colorDark: '#932323',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
+
+        // Función para descargar el código QR
+        function descargarQR() {
+            const qrcodeElement = document.getElementById('qrcode');
+            const canvas = qrcodeElement.querySelector('canvas');
+            const img = qrcodeElement.querySelector('img');
+            
+            if (canvas) {
+                // Si es canvas, convertir a imagen
+                const url = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'QR-<?php echo htmlspecialchars($maquina['codigo_maquina']); ?>.png';
+                a.click();
+            } else if (img) {
+                // Si es imagen, descargar directamente
+                const a = document.createElement('a');
+                a.href = img.src;
+                a.download = 'QR-<?php echo htmlspecialchars($maquina['codigo_maquina']); ?>.png';
+                a.click();
+            } else {
+                alert('No se pudo generar el código QR para descargar.');
+            }
+        }
+    </script>
 
     <script src="../../assets/js/main.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

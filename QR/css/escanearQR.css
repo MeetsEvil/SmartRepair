@@ -1,0 +1,90 @@
+* {
+    box-sizing: border-box
+}
+
+body {
+    font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f1f2f5, #c4c6ca);
+    color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px
+}
+
+.card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6)
+}
+
+h2 {
+    margin: 0 0 12px 0;
+    font-size: 18px
+}
+
+.controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px
+}
+
+button {
+    background: #06b6d4;
+    color: #012026;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer
+}
+
+button.secondary {
+    background: transparent;
+    color: #080808;
+    border: 1px solid rgba(0, 0, 0, 0.16)
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+#qrcode {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+}
+
+#qrcode img {
+    border: 2px solid #000000;
+}
+
+video {
+    width: 100%;
+    border-radius: 8px;
+    background: transparent;
+}
+
+canvas {
+    display: none
+}
+
+.small {
+    font-size: 12px;
+    color: #36383b;
+}
+
+.footer {
+    margin-top: 12px;
+    font-size: 13px
+}
+
+@media(max-width:900px) {
+    .wrap {
+        grid-template-columns: 1fr;
+    }
+}

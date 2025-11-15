@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Escáner QR</title>
+  <link rel="stylesheet" href="css/escanearQR.css">
+</head>
+
+<body>
+
+  <!-- Escáner -->
+  <div class="card">
+    <h2>Escáner de QR</h2>
+    <p class="small">Permite usar la cámara para escanear un QR. El texto decodificado aparecerá en la consola y en la
+      pantalla.</p>
+    <div style="margin-top:10px">
+      <div class="center"><video id="video" playsinline></video></div>
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class="controls" style="margin-top:10px">
+      <button id="start">Iniciar Escaneo</button>
+      <button id="stop" class="secondary">Detener</button>
+      <label class="secondary" style="padding:8px 10px; border-radius:8px; cursor:pointer">
+        Subir imagen
+        <input id="file" type="file" accept="image/*" style="display:none" />
+      </label>
+    </div>
+    <div style="margin-top:10px">
+      <strong>Último texto leído:</strong>
+      <div id="result" class="small"></div>
+    </div>
+    <div class="footer small" style="margin-top:14px">Nota: el escaneo requiere permisos de
+      cámara.</div>
+  </div>
+
+
+  <!-- Librerías (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+
+  <script>
+
+    // Escáner
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const startBtn = document.getElementById('start');
+    const stopBtn = document.getElementById('stop');
+    const resultEl = document.getElementById('result');
+    const fileInput = document.getElementById('file');
+
+
+    let stream = null;
+    let scanning = false;
+    const ctx = canvas.getContext('2d');
+
+
+    async function startScan() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        video.srcObject = stream;
+        await video.play();
+        scanning = true;
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        tick();
+        console.log('Cámara iniciada para escaneo.');
+      } catch (err) {
+        console.error('No se pudo acceder a la cámara:', err);
+        alert('Error al acceder a la cámara. Asegúrate de que el sitio tenga permisos o usa localhost/HTTPS.');
+      }
+    }
+
+
+    function stopScan() {
+      scanning = false;
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+        stream = null;
+      }
+      video.pause();
+      video.srcObject = null;
+      console.log('Escaneo detenido.');
+    }
+
+
+    function tick() {
+      if (!scanning) return;
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'attemptBoth' });
+        if (code) {
+          // Código detectado
+          const text = code.data;
+          resultEl.textContent = text;
+          console.log('Texto del QR detectado:', text);
+          // Si quieres que deje de escanear al detectar, descomenta la siguiente línea:
+          stopScan();
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    startBtn.addEventListener('click', () => { if (!scanning) startScan(); });
+    stopBtn.addEventListener('click', () => { stopScan(); });
+
+
+    // Soporte para subir imagen y decodificar
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'attemptBoth' });
+        if (code) {
+          resultEl.textContent = code.data;
+          console.log('Texto del QR desde imagen:', code.data);
+        } else {
+          resultEl.textContent = 'No se detectó un QR en la imagen.';
+          console.log('No se detectó un QR en la imagen.');
+        }
+        URL.revokeObjectURL(url);
+      };
+      img.onerror = () => { alert('No se pudo leer la imagen.'); URL.revokeObjectURL(url); };
+      img.src = url;
+    });
+  </script>
+
+</body>
+
+</html>

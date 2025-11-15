@@ -34,7 +34,7 @@ if (mysqli_num_rows($check) > 0) {
 $fecha_sql = $fecha_instalacion ? "'$fecha_instalacion'" : "NULL";
 $usuario_sql = $id_usuario ? $id_usuario : "NULL";
 
-// Insertar la máquina primero (sin imagen)
+// Insertar la máquina primero (sin imagen ni codigoQR, se generarán después)
 $sql = "INSERT INTO maquinas (
             codigo_maquina, 
             marca, 
@@ -46,7 +46,8 @@ $sql = "INSERT INTO maquinas (
             fecha_instalacion, 
             estado, 
             observaciones,
-            created_by
+            created_by,
+            codigoQR
         ) VALUES (
             '$codigo_maquina', 
             '$marca', 
@@ -58,7 +59,8 @@ $sql = "INSERT INTO maquinas (
             $fecha_sql, 
             'Activa', 
             '$observaciones',
-            $usuario_sql
+            $usuario_sql,
+            'TEMP'
         )";
 
 if (mysqli_query($conexion, $sql)) {
@@ -125,9 +127,17 @@ if (mysqli_query($conexion, $sql)) {
         }
     }
     
-    // Actualizar la máquina con la ruta de la imagen
-    $sql_update = "UPDATE maquinas SET imagen = '$ruta_imagen' WHERE id_maquina = $id_maquina";
-    mysqli_query($conexion, $sql_update);
+    // Generar código QR: ID + codigo_maquina (sin espacios ni caracteres especiales)
+    $codigoQR = $id_maquina . str_replace([' ', '-', '_'], '', $codigo_maquina);
+    
+    // Actualizar la máquina con la ruta de la imagen y el código QR
+    $sql_update = "UPDATE maquinas SET imagen = '$ruta_imagen', codigoQR = '$codigoQR' WHERE id_maquina = $id_maquina";
+    if (!mysqli_query($conexion, $sql_update)) {
+        // Si falla la actualización, intentar solo con el ID como código QR
+        $codigoQR = 'MAQ' . $id_maquina;
+        $sql_update = "UPDATE maquinas SET imagen = '$ruta_imagen', codigoQR = '$codigoQR' WHERE id_maquina = $id_maquina";
+        mysqli_query($conexion, $sql_update);
+    }
     
     $_SESSION['success'] = true;
     mysqli_close($conexion);

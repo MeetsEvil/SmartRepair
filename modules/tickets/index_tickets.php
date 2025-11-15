@@ -280,16 +280,24 @@ if (!isset($_SESSION['usuarioingresando'])) {
             background: #DC2626;
         }
 
+        .prioridad-crítica {
+            background: #DC2626;
+            color: white;
+        }
+
         .prioridad-alta {
             background: #F59E0B;
+            color: white;
         }
 
         .prioridad-media {
             background: #3B82F6;
+            color: white;
         }
 
         .prioridad-baja {
             background: #10B981;
+            color: white;
         }
 
         .ticket-responsable {

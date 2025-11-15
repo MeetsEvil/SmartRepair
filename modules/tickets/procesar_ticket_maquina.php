@@ -22,14 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $_SESSION['mensaje'] = 'Error: No se pudo identificar al usuario';
             $_SESSION['tipo_mensaje'] = 'error';
-            header("Location: crear_tickets.php");
+            header("Location: ../maquinas/index_maquinas.php");
             exit();
         }
     }
 
-    $id_maquina = mysqli_real_escape_string($conexion, $_POST['id_maquina']);
-    $id_prioridad = mysqli_real_escape_string($conexion, $_POST['id_prioridad']);
-    $id_tipo_falla = mysqli_real_escape_string($conexion, $_POST['id_tipo_falla']);
+    $id_maquina = intval($_POST['id_maquina']);
+    $id_prioridad = intval($_POST['id_prioridad']);
+    $id_tipo_falla = intval($_POST['id_tipo_falla']);
     $descripcion_falla = mysqli_real_escape_string($conexion, trim($_POST['descripcion_falla']));
     $id_usuario_reporta = $_SESSION['id_usuario'];
 
@@ -37,14 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($id_maquina) || empty($id_prioridad) || empty($id_tipo_falla) || empty($descripcion_falla)) {
         $_SESSION['mensaje'] = 'Todos los campos obligatorios deben ser completados';
         $_SESSION['tipo_mensaje'] = 'error';
-        header("Location: crear_tickets.php");
+        header("Location: crear_ticket_maquina.php?id_maquina=$id_maquina");
         exit();
     }
 
     if (strlen($descripcion_falla) < 20) {
         $_SESSION['mensaje'] = 'La descripción debe tener al menos 20 caracteres';
         $_SESSION['tipo_mensaje'] = 'error';
-        header("Location: crear_tickets.php");
+        header("Location: crear_ticket_maquina.php?id_maquina=$id_maquina");
         exit();
     }
 
@@ -60,14 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!in_array($_FILES['foto']['type'], $allowed_types) && !in_array($file_extension, $allowed_extensions)) {
             $_SESSION['mensaje'] = 'Solo se permiten imágenes (JPG, JPEG, PNG, GIF, JFIF)';
             $_SESSION['tipo_mensaje'] = 'error';
-            header("Location: crear_tickets.php");
+            header("Location: crear_ticket_maquina.php?id_maquina=$id_maquina");
             exit();
         }
 
         if ($_FILES['foto']['size'] > $max_size) {
             $_SESSION['mensaje'] = 'La imagen no debe superar los 5MB';
             $_SESSION['tipo_mensaje'] = 'error';
-            header("Location: crear_tickets.php");
+            header("Location: crear_ticket_maquina.php?id_maquina=$id_maquina");
             exit();
         }
 
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $_SESSION['mensaje'] = 'Error al subir la imagen. Intente nuevamente.';
             $_SESSION['tipo_mensaje'] = 'error';
-            header("Location: crear_tickets.php");
+            header("Location: crear_ticket_maquina.php?id_maquina=$id_maquina");
             exit();
         }
     }
@@ -97,26 +97,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($foto_url) {
         $query = "INSERT INTO tickets (id_maquina, id_tipo_falla, id_prioridad, id_estado, 
                   id_usuario_reporta, descripcion_falla, foto_url) 
-                  VALUES ('$id_maquina', '$id_tipo_falla', '$id_prioridad', 1, 
-                  '$id_usuario_reporta', '$descripcion_falla', '$foto_url')";
+                  VALUES ($id_maquina, $id_tipo_falla, $id_prioridad, 1, 
+                  $id_usuario_reporta, '$descripcion_falla', '$foto_url')";
     } else {
         $query = "INSERT INTO tickets (id_maquina, id_tipo_falla, id_prioridad, id_estado, 
                   id_usuario_reporta, descripcion_falla) 
-                  VALUES ('$id_maquina', '$id_tipo_falla', '$id_prioridad', 1, 
-                  '$id_usuario_reporta', '$descripcion_falla')";
+                  VALUES ($id_maquina, $id_tipo_falla, $id_prioridad, 1, 
+                  $id_usuario_reporta, '$descripcion_falla')";
     }
 
     if (mysqli_query($conexion, $query)) {
-        $_SESSION['mensaje'] = 'Ticket creado correctamente';
+        $_SESSION['mensaje'] = 'Falla reportada correctamente. El ticket ha sido creado.';
         $_SESSION['tipo_mensaje'] = 'success';
-        header("Location: index_tickets.php");
+        header("Location: ../maquinas/ver_maquinas.php?id=$id_maquina");
     } else {
         $_SESSION['mensaje'] = 'Error al crear el ticket: ' . mysqli_error($conexion);
         $_SESSION['tipo_mensaje'] = 'error';
-        header("Location: crear_tickets.php");
+        header("Location: crear_ticket_maquina.php?id_maquina=$id_maquina");
     }
 } else {
-    header("Location: crear_tickets.php");
+    header("Location: ../maquinas/index_maquinas.php");
 }
 exit();
-?>
