@@ -362,9 +362,156 @@ body {
   .main.active {
     left: 300px;
   }
+
+  /* Ajustes para contenedores */
+  .usuarios-container,
+  .form-container,
+  .view-container,
+  .tickets-container,
+  .maquinas-container {
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+    width: calc(100% - 40px) !important;
+    padding: 20px !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  .module-box {
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+    width: calc(100% - 40px) !important;
+    height: auto !important;
+    padding: 20px !important;
+    min-height: 400px !important;
+  }
+
+  /* Dashboard cards responsive */
+  .cardBox {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+    padding: 15px !important;
+  }
+
+  .card {
+    padding: 15px !important;
+  }
+
+  .cardName {
+    font-size: 0.9em !important;
+  }
+
+  .numbers {
+    font-size: 1.8em !important;
+  }
+
+  /* Topbar responsive */
+  .page-title {
+    font-size: 2em !important;
+    margin-top: 20px !important;
+    position: relative !important;
+    left: 0 !important;
+    transform: none !important;
+  }
+
+  .user-box {
+    margin-right: 10px !important;
+    padding: 6px 12px !important;
+    font-size: 0.9em !important;
+  }
+
+  .user-name {
+    font-size: 0.9em !important;
+  }
+
+  .user-role {
+    font-size: 0.75em !important;
+  }
+
+  .info-btn {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 1em !important;
+  }
+
+  /* Tablas responsive */
+  #tablaUsuarios,
+  #tablaMaquinas,
+  #tablaLineas,
+  #tablaTickets {
+    font-size: 0.85em !important;
+  }
+
+  #tablaUsuarios th,
+  #tablaUsuarios td,
+  #tablaMaquinas th,
+  #tablaMaquinas td,
+  #tablaLineas th,
+  #tablaLineas td,
+  #tablaTickets th,
+  #tablaTickets td {
+    padding: 8px 5px !important;
+  }
+
+  /* Botones responsive */
+  .btn-new,
+  .btn-regresar,
+  .btn-submit,
+  .btn-cancel,
+  .btn-action,
+  .exportar {
+    padding: 8px 15px !important;
+    font-size: 0.9em !important;
+  }
+
+  /* Header sections */
+  .header-section {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 15px !important;
+  }
+
+  .section-title {
+    font-size: 1.8em !important;
+  }
+
+  /* Formularios responsive */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Info grids responsive */
+  .info-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Imagen de máquina responsive */
+  .machine-image-container {
+    max-width: 100% !important;
+  }
+
+  .machine-image {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* QR Code responsive */
+  .qr-container {
+    flex-direction: column !important;
+  }
+
+  .qr-code {
+    max-width: 200px !important;
+  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  /* Navegación móvil */
   .navigation {
     width: 100%;
     left: -100%;
@@ -382,6 +529,362 @@ body {
     position: fixed;
     right: 0;
     left: initial;
+  }
+
+  /* Contenedores móviles */
+  .usuarios-container,
+  .form-container,
+  .view-container,
+  .tickets-container,
+  .maquinas-container {
+    margin: 10px !important;
+    width: calc(100% - 20px) !important;
+    padding: 15px !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  .module-box {
+    margin: 10px !important;
+    width: calc(100% - 20px) !important;
+    padding: 15px !important;
+    height: auto !important;
+    min-height: 300px !important;
+  }
+
+  .module-box .content-wrapper {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  .module-box .text-content {
+    max-width: 100% !important;
+  }
+
+  .module-box h2 {
+    font-size: 2em !important;
+  }
+
+  .module-box p {
+    font-size: 1em !important;
+  }
+
+  .module-box .image-content {
+    padding-left: 0 !important;
+    margin-top: 20px !important;
+  }
+
+  .module-box .image-content img {
+    width: 60% !important;
+  }
+
+  /* Dashboard cards móvil */
+  .cardBox {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    padding: 10px !important;
+  }
+
+  .card {
+    padding: 15px !important;
+  }
+
+  .iconBx {
+    font-size: 2em !important;
+  }
+
+  .numbers {
+    font-size: 1.5em !important;
+  }
+
+  .cardName {
+    font-size: 0.85em !important;
+  }
+
+  /* Topbar móvil */
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 5px;
+  }
+
+  .page-title {
+    font-size: 1.5em !important;
+    margin-top: 10px !important;
+    position: relative !important;
+    left: 0 !important;
+    transform: none !important;
+    letter-spacing: 1px !important;
+  }
+
+  .user-box {
+    width: 100%;
+    margin: 10px 0 !important;
+    justify-content: center;
+  }
+
+  /* Formularios móviles */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .form-label {
+    text-align: left !important;
+    padding-top: 0 !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Botones móviles */
+  .form-actions,
+  .action-buttons {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .btn-submit,
+  .btn-cancel,
+  .btn-action,
+  .btn-new,
+  .btn-regresar,
+  .exportar {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 20px !important;
+  }
+
+  /* Tablas móviles */
+  .dataTables_wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table.dataTable {
+    min-width: 600px;
+  }
+
+  /* Modales móviles */
+  .modal-content {
+    width: 95% !important;
+    margin: 10px !important;
+    max-width: none !important;
+  }
+
+  .modal-header h2 {
+    font-size: 1.2em !important;
+  }
+
+  .modal-body p {
+    font-size: 0.95em !important;
+  }
+
+  .modal-footer {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .modal-footer .btn-cancel,
+  .modal-footer .btn-confirm {
+    width: 100% !important;
+  }
+
+  /* Imagen de máquina móvil */
+  .machine-image-container {
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+
+  .machine-image {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Upload de imagen móvil */
+  .image-upload-container {
+    flex-direction: column !important;
+  }
+
+  .image-preview {
+    max-width: 100% !important;
+  }
+
+  /* QR Code móvil */
+  .qr-container {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .qr-code {
+    max-width: 150px !important;
+  }
+
+  /* Prioridad badges móvil */
+  .priority-badge {
+    font-size: 0.8em !important;
+    padding: 4px 8px !important;
+  }
+
+  /* Estado badges móvil */
+  .status-badge {
+    font-size: 0.8em !important;
+    padding: 4px 8px !important;
+  }
+
+  /* Búsqueda QR móvil */
+  .qr-search-container {
+    padding: 15px !important;
+  }
+
+  #video {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Ajustes para pantallas muy pequeñas */
+  .section-title {
+    font-size: 1.3em !important;
+  }
+
+  .page-title {
+    font-size: 1.2em !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  .form-title,
+  .view-title {
+    font-size: 1.3em !important;
+  }
+
+  /* Module box muy pequeño */
+  .module-box h2 {
+    font-size: 1.5em !important;
+  }
+
+  .module-box p {
+    font-size: 0.9em !important;
+  }
+
+  .btn-consultar {
+    font-size: 0.9em !important;
+    padding: 10px 20px !important;
+  }
+
+  /* Dashboard cards muy pequeño */
+  .card {
+    padding: 12px !important;
+  }
+
+  .numbers {
+    font-size: 1.3em !important;
+  }
+
+  .cardName {
+    font-size: 0.75em !important;
+  }
+
+  .iconBx {
+    font-size: 1.8em !important;
+  }
+
+  /* Ocultar columnas menos importantes en tablas */
+  #tablaUsuarios th:nth-child(1),
+  #tablaUsuarios td:nth-child(1),
+  #tablaMaquinas th:nth-child(1),
+  #tablaMaquinas td:nth-child(1),
+  #tablaTickets th:nth-child(1),
+  #tablaTickets td:nth-child(1) {
+    display: none;
+  }
+
+  /* Botones más pequeños */
+  .btn-new,
+  .btn-submit,
+  .btn-cancel,
+  .btn-action,
+  .btn-regresar,
+  .exportar {
+    font-size: 0.85em !important;
+    padding: 10px 15px !important;
+  }
+
+  /* User box compacto */
+  .user-box {
+    padding: 5px 10px !important;
+    font-size: 0.8em !important;
+  }
+
+  .user-name {
+    font-size: 0.85em !important;
+  }
+
+  .user-role {
+    font-size: 0.7em !important;
+  }
+
+  .info-btn {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 1em !important;
+  }
+
+  /* Formularios muy pequeños */
+  .form-input,
+  .form-select,
+  .form-textarea {
+    font-size: 0.9em !important;
+    padding: 8px !important;
+  }
+
+  /* Modales muy pequeños */
+  .modal-header h2 {
+    font-size: 1.1em !important;
+  }
+
+  .modal-body p {
+    font-size: 0.9em !important;
+  }
+
+  .btn-cancel,
+  .btn-confirm {
+    font-size: 0.9em !important;
+    padding: 8px 15px !important;
+  }
+
+  /* QR Code muy pequeño */
+  .qr-code {
+    max-width: 120px !important;
+  }
+
+  /* Imagen de máquina muy pequeña */
+  .machine-image {
+    max-width: 100% !important;
+  }
+
+  /* Prioridad y estado badges muy pequeños */
+  .priority-badge,
+  .status-badge {
+    font-size: 0.7em !important;
+    padding: 3px 6px !important;
+  }
+
+  /* Navegación logo muy pequeño */
+  .navigation ul .logo img {
+    width: 100px !important;
+    margin-left: 40px !important;
+  }
+
+  .navigation.active ul .logo img {
+    width: 40px !important;
+    margin-left: 20px !important;
   }
 }
 

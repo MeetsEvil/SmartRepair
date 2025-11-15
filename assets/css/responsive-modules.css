@@ -1,0 +1,442 @@
+/* ================= Responsive Styles for Machines & Tickets ================= */
+
+/* ================= Machine Image Styles ================= */
+.machine-image-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.machine-image {
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.machine-image:hover {
+    transform: scale(1.05);
+}
+
+/* Image Upload Container */
+.image-upload-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin: 20px 0;
+}
+
+.image-preview {
+    max-width: 300px;
+    width: 100%;
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ================= QR Code Styles ================= */
+.qr-container {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.qr-code {
+    max-width: 250px;
+    width: 100%;
+    height: auto;
+    border: 3px solid #932323;
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
+}
+
+.qr-info {
+    flex: 1;
+}
+
+/* QR Search Container */
+.qr-search-container {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+#video {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    border-radius: 10px;
+    border: 2px solid #932323;
+}
+
+/* ================= Priority & Status Badges ================= */
+.priority-badge,
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Priority Colors */
+.priority-alta {
+    background: #dc3545;
+    color: white;
+}
+
+.priority-media {
+    background: #ffc107;
+    color: #000;
+}
+
+.priority-baja {
+    background: #28a745;
+    color: white;
+}
+
+/* Status Colors */
+.status-pendiente {
+    background: #ffc107;
+    color: #000;
+}
+
+.status-en-proceso {
+    background: #17a2b8;
+    color: white;
+}
+
+.status-completado {
+    background: #28a745;
+    color: white;
+}
+
+.status-cancelado {
+    background: #6c757d;
+    color: white;
+}
+
+/* ================= Form Styles ================= */
+.form-container {
+    margin: 30px auto;
+    margin-top: 50px;
+    margin-left: 170px;
+    margin-right: 10px;
+    padding: 30px;
+    background: white;
+    border: 2px solid #adabab;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    width: calc(95% - 200px);
+    min-height: 400px;
+    transition: all 0.3s ease;
+}
+
+.form-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.form-title {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #4d0d0d;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #932323;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn-submit {
+    background: linear-gradient(90deg, #932323, #4d0d0d);
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-size: 1.1em;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(90deg, #7b1f1f, #430c0c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-cancel {
+    background: #7e7d7d;
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-size: 1.1em;
+    transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #666;
+    transform: translateY(-2px);
+}
+
+/* ================= View Container Styles ================= */
+.view-container {
+    margin: 30px auto;
+    margin-top: 50px;
+    margin-left: 170px;
+    margin-right: 10px;
+    padding: 30px;
+    background: white;
+    border: 2px solid #adabab;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    width: calc(95% - 200px);
+    min-height: 400px;
+}
+
+.view-title {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #4d0d0d;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.info-item {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #932323;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    font-size: 1.1em;
+    color: #333;
+    font-weight: 500;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn-action {
+    background: linear-gradient(90deg, #932323, #4d0d0d);
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 12px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-action:hover {
+    background: linear-gradient(90deg, #7b1f1f, #430c0c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ================= Responsive Styles ================= */
+@media (max-width: 991px) {
+    .form-container,
+    .view-container {
+        margin-left: 20px;
+        margin-right: 20px;
+        width: calc(100% - 40px);
+        padding: 20px;
+    }
+
+    .form-grid,
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .image-upload-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .qr-container {
+        flex-direction: column;
+    }
+
+    .machine-image {
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-container,
+    .view-container {
+        margin: 10px;
+        width: calc(100% - 20px);
+        padding: 15px;
+    }
+
+    .form-title,
+    .view-title {
+        font-size: 1.8em;
+    }
+
+    .form-grid,
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .form-actions,
+    .action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-submit,
+    .btn-cancel,
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .machine-image {
+        max-width: 100%;
+    }
+
+    .qr-code {
+        max-width: 200px;
+    }
+
+    #video {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container,
+    .view-container {
+        margin: 10px;
+        padding: 12px;
+    }
+
+    .form-title,
+    .view-title {
+        font-size: 1.5em;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+        font-size: 0.9em;
+        padding: 10px;
+    }
+
+    .btn-submit,
+    .btn-cancel,
+    .btn-action {
+        font-size: 0.95em;
+        padding: 10px 20px;
+    }
+
+    .info-item {
+        padding: 12px;
+    }
+
+    .info-label {
+        font-size: 0.85em;
+    }
+
+    .info-value {
+        font-size: 1em;
+    }
+
+    .priority-badge,
+    .status-badge {
+        font-size: 0.8em;
+        padding: 5px 10px;
+    }
+
+    .qr-code {
+        max-width: 150px;
+    }
+}

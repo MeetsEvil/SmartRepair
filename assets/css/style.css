@@ -239,9 +239,11 @@ h2 {
 }
 
 
+/* ====================== Responsive Design ========================== */
 @media(max-width:991px) {
     body {
         background: url(../images/login_mattel2.png) no-repeat center center fixed;
+        background-size: cover;
     }
 
     .FormCajaLogin {
@@ -249,6 +251,7 @@ h2 {
         margin: 0;
         padding: 0;
         justify-content: center;
+        padding: 20px;
     }
 
     .FormLogin {
@@ -258,5 +261,191 @@ h2 {
 
     .recuperarContraseña {
         width: 350px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .BtnLogin {
+        width: 220px;
+        font-size: 16px;
+    }
+}
+
+@media(max-width:768px) {
+    body {
+        background: url(../images/login_mattel2.png) no-repeat center center fixed;
+        background-size: cover;
+        padding: 10px;
+    }
+
+    .FormCajaLogin {
+        padding: 10px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .FormLogin {
+        width: 100%;
+        max-width: 380px;
+        height: auto;
+        padding: 20px 15px;
+        min-height: 420px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+        margin-top: 15px;
+    }
+
+    .Titulo11 {
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+
+    .grupo-entradas {
+        padding: 0 5%;
+        margin-right: 0;
+    }
+
+    .input-grupo {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .CajaTexto {
+        font-size: 0.95em;
+        padding: 11px 11px 11px 42px;
+    }
+
+    .input-grupo .icono {
+        font-size: 1.1em;
+        left: 12px;
+    }
+
+    .toggle-password {
+        font-size: 1.1em;
+        right: 12px;
+    }
+
+    .recuperarContraseña {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .recuperarContraseña a {
+        font-size: 0.9em;
+    }
+
+    .BtnLogin {
+        width: 100%;
+        max-width: 220px;
+        font-size: 16px;
+        padding: 12px 30px;
+        margin-left: 0;
+    }
+}
+
+@media(max-width:480px) {
+    body {
+        background: url(../images/login_mattel2.png) no-repeat center center fixed;
+        background-size: cover;
+        padding: 5px;
+    }
+
+    .FormCajaLogin {
+        padding: 5px;
+    }
+
+    .FormLogin {
+        width: 100%;
+        max-width: 340px;
+        height: auto;
+        padding: 15px 10px;
+        min-height: 400px;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+        margin-top: 10px;
+    }
+
+    .Titulo11 {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+
+    .grupo-entradas {
+        padding: 0 3%;
+    }
+
+    .input-grupo {
+        margin-bottom: 18px;
+    }
+
+    .CajaTexto {
+        font-size: 0.9em;
+        padding: 10px 10px 10px 40px;
+        border-radius: 20px;
+    }
+
+    .input-grupo .icono {
+        font-size: 1em;
+        left: 10px;
+    }
+
+    .toggle-password {
+        font-size: 1em;
+        right: 10px;
+    }
+
+    .recuperarContraseña {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .recuperarContraseña a {
+        font-size: 0.85em;
+    }
+
+    .BtnLogin {
+        width: 100%;
+        max-width: 200px;
+        font-size: 15px;
+        padding: 11px 25px;
+        border-radius: 20px;
+    }
+
+    .custom-arrow {
+        font-size: 0.9em;
+        right: 12px;
+    }
+}
+
+@media(max-width:360px) {
+    .FormLogin {
+        max-width: 300px;
+        padding: 12px 8px;
+    }
+
+    h1 {
+        font-size: 1.3em;
+    }
+
+    .CajaTexto {
+        font-size: 0.85em;
+        padding: 9px 9px 9px 38px;
+    }
+
+    .BtnLogin {
+        max-width: 180px;
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+
+    .recuperarContraseña a {
+        font-size: 0.8em;
     }
 }

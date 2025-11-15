@@ -1,0 +1,172 @@
+/* ================= Dashboard Styles ================= */
+
+/* Cards Container */
+.cardBox {
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+/* Individual Card */
+.card {
+    position: relative;
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Numbers */
+.card .numbers {
+    position: relative;
+    font-weight: 500;
+    font-size: 2.5em;
+    color: #932323;
+}
+
+/* Card Name */
+.card .cardName {
+    color: #999;
+    font-size: 1.1em;
+    margin-top: 5px;
+}
+
+/* Card Icon */
+.card .iconBx {
+    font-size: 3.5em;
+    color: #999;
+}
+
+/* Card Colors */
+.card:nth-child(1) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.card:nth-child(1) .numbers,
+.card:nth-child(1) .cardName,
+.card:nth-child(1) .iconBx {
+    color: #fff;
+}
+
+.card:nth-child(2) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.card:nth-child(2) .numbers,
+.card:nth-child(2) .cardName,
+.card:nth-child(2) .iconBx {
+    color: #fff;
+}
+
+.card:nth-child(3) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.card:nth-child(3) .numbers,
+.card:nth-child(3) .cardName,
+.card:nth-child(3) .iconBx {
+    color: #fff;
+}
+
+.card:nth-child(4) {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.card:nth-child(4) .numbers,
+.card:nth-child(4) .cardName,
+.card:nth-child(4) .iconBx {
+    color: #fff;
+}
+
+/* ================= Responsive Dashboard ================= */
+@media (max-width: 1200px) {
+    .cardBox {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 991px) {
+    .cardBox {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .card .numbers {
+        font-size: 2em;
+    }
+
+    .card .cardName {
+        font-size: 1em;
+    }
+
+    .card .iconBx {
+        font-size: 3em;
+    }
+}
+
+@media (max-width: 768px) {
+    .cardBox {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    .card {
+        padding: 20px;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .card .numbers {
+        font-size: 1.8em;
+    }
+
+    .card .cardName {
+        font-size: 0.95em;
+    }
+
+    .card .iconBx {
+        font-size: 2.5em;
+    }
+}
+
+@media (max-width: 480px) {
+    .cardBox {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .card .numbers {
+        font-size: 1.5em;
+    }
+
+    .card .cardName {
+        font-size: 0.85em;
+    }
+
+    .card .iconBx {
+        font-size: 2em;
+    }
+}
