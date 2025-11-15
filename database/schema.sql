@@ -204,6 +204,7 @@ CREATE TABLE tickets (
     tiempo_total INT COMMENT 'Minutos desde creación hasta cierre',
     
     observaciones TEXT,
+    visible TINYINT(1) DEFAULT 1 COMMENT 'Si es 0, el ticket está oculto (eliminado lógicamente)',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
@@ -219,7 +220,8 @@ CREATE TABLE tickets (
     INDEX idx_estado (id_estado),
     INDEX idx_prioridad (id_prioridad),
     INDEX idx_tecnico (id_tecnico_responsable),
-    INDEX idx_fecha_creacion (fecha_creacion)
+    INDEX idx_fecha_creacion (fecha_creacion),
+    INDEX idx_visible (visible)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabla auxiliar: ticket_tecnicos (para futuro soporte de múltiples técnicos)

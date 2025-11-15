@@ -135,6 +135,26 @@ $rol = $_SESSION['rol'];
             transform: translateY(-2px);
         }
 
+        .btn-delete {
+            background: linear-gradient(90deg, #DC2626, #991B1B);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(90deg, #B91C1C, #7F1D1D);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -461,6 +481,13 @@ $rol = $_SESSION['rol'];
                             <ion-icon name="create-outline"></ion-icon> Editar
                         </a>
                     <?php endif; ?>
+                    
+                    <?php if ($ticket['id_estado'] == 4 && $rol == 'Administrador'): ?>
+                        <button onclick="confirmarOcultarTicket(<?php echo $ticket['id_ticket']; ?>)" class="btn-delete">
+                            <ion-icon name="trash-outline"></ion-icon> Eliminar Ticket
+                        </button>
+                    <?php endif; ?>
+                    
                     <a href="index_tickets.php" class="btn-back">
                         <ion-icon name="arrow-back-outline"></ion-icon> Volver
                     </a>
@@ -666,6 +693,48 @@ $rol = $_SESSION['rol'];
             const modal = document.getElementById('modalFoto');
             if (event.target == modal) {
                 cerrarFoto();
+            }
+        }
+    </script>
+
+    <!-- Modal de confirmación para ocultar ticket -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close-btn" onclick="cerrarModalEliminar()">&times;</span>
+                <h2>Eliminar Ticket</h2>
+            </div>
+            <div class="modal-body">
+                <p style="color: #DC2626; font-weight: 600;">
+                    <ion-icon name="warning-outline" style="vertical-align: middle; font-size: 1.5em;"></ion-icon>
+                    ¿Estás seguro de que deseas eliminar este ticket?
+                </p>
+                <p style="margin-top: 10px; color: #666;">
+                    El ticket será ocultado del sistema pero no se eliminará de la base de datos.
+                    Esta acción solo puede realizarse en tickets finalizados.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="cerrarModalEliminar()">Cancelar</button>
+                <a href="#" id="btnConfirmarEliminar" class="btn-confirm" style="background: #DC2626;">Eliminar</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmarOcultarTicket(idTicket) {
+            document.getElementById('deleteModal').style.display = 'flex';
+            document.getElementById('btnConfirmarEliminar').href = 'ocultar_ticket.php?id=' + idTicket;
+        }
+
+        function cerrarModalEliminar() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const deleteModal = document.getElementById('deleteModal');
+            if (event.target == deleteModal) {
+                cerrarModalEliminar();
             }
         }
     </script>
