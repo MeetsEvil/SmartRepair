@@ -371,6 +371,165 @@ if (!isset($_SESSION['usuarioingresando']) || ($_SESSION['rol'] != 'Administrado
         .tipo-otro {
             background: #6B7280;
         }
+
+        /* ==================== RESPONSIVE STYLES ==================== */
+        
+        @media (max-width: 991px) {
+            .mantenimientos-container {
+                margin-left: 20px !important;
+                margin-right: 20px !important;
+                width: calc(100% - 40px) !important;
+                padding: 20px !important;
+                height: auto !important;
+            }
+
+            .header-section {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 15px !important;
+            }
+
+            .section-title {
+                font-size: 1.8em !important;
+            }
+
+            #mantenimientosTable {
+                font-size: 0.85em !important;
+            }
+
+            #mantenimientosTable th,
+            #mantenimientosTable td {
+                padding: 10px 8px !important;
+            }
+
+            .btn-new {
+                padding: 8px 15px !important;
+                font-size: 0.9em !important;
+            }
+
+            .dt-buttons {
+                flex-wrap: wrap !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mantenimientos-container {
+                margin: 70px 10px 10px 10px !important;
+                width: calc(100% - 20px) !important;
+                padding: 15px !important;
+            }
+
+            .section-title {
+                font-size: 1.5em !important;
+                text-align: center !important;
+                width: 100% !important;
+            }
+
+            .header-section {
+                align-items: stretch !important;
+            }
+
+            .btn-new {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            /* DataTables responsive */
+            .dataTables_wrapper {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter {
+                float: none !important;
+                text-align: left !important;
+                margin-bottom: 10px !important;
+            }
+
+            .dataTables_wrapper .dataTables_filter input {
+                width: 100% !important;
+                margin-left: 0 !important;
+                margin-top: 5px !important;
+            }
+
+            .dataTables_wrapper .dataTables_length select {
+                width: 100% !important;
+                max-width: 150px !important;
+            }
+
+            .dt-buttons {
+                flex-direction: column !important;
+                gap: 5px !important;
+            }
+
+            .btn-dt {
+                width: 100% !important;
+                text-align: center !important;
+            }
+
+            #mantenimientosTable {
+                min-width: 600px !important;
+                font-size: 0.8em !important;
+            }
+
+            #mantenimientosTable th,
+            #mantenimientosTable td {
+                padding: 8px 4px !important;
+                white-space: nowrap !important;
+            }
+
+            /* Ocultar columna ID en móvil */
+            #mantenimientosTable th:first-child,
+            #mantenimientosTable td:first-child {
+                display: none !important;
+            }
+
+            .dataTables_info {
+                font-size: 0.85em !important;
+                text-align: center !important;
+                margin-top: 10px !important;
+            }
+
+            .dataTables_paginate {
+                text-align: center !important;
+                font-size: 0.85em !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mantenimientos-container {
+                padding: 12px !important;
+            }
+
+            .section-title {
+                font-size: 1.3em !important;
+            }
+
+            .btn-new {
+                font-size: 0.85em !important;
+                padding: 10px 15px !important;
+            }
+
+            #mantenimientosTable {
+                font-size: 0.75em !important;
+            }
+
+            #mantenimientosTable th,
+            #mantenimientosTable td {
+                padding: 6px 3px !important;
+            }
+
+            .btn-action {
+                padding: 5px 8px !important;
+                font-size: 0.8em !important;
+            }
+
+            .tipo-badge {
+                font-size: 0.7em !important;
+                padding: 3px 6px !important;
+            }
+        }
     </style>
 </head>
 

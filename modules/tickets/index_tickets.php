@@ -406,6 +406,161 @@ if (!isset($_SESSION['usuarioingresando'])) {
             border-left: 4px solid #3B82F6;
             color: #1e40af;
         }
+
+        /* ==================== RESPONSIVE TABS ==================== */
+        
+        /* Contenedor con scroll horizontal para móvil */
+        .tabs-container-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Botones de navegación para móvil */
+        .tab-nav-btn {
+            display: none;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(147, 35, 35, 0.9);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-nav-btn:hover {
+            background: rgba(147, 35, 35, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .tab-nav-btn.prev {
+            left: 5px;
+        }
+
+        .tab-nav-btn.next {
+            right: 5px;
+        }
+
+        .tab-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Indicadores de scroll - DESHABILITADOS */
+        .scroll-indicator {
+            display: none !important;
+        }
+
+        .scroll-dots {
+            display: none !important;
+        }
+
+        .scroll-dot {
+            display: none !important;
+        }
+
+        @media (max-width: 991px) {
+            .tabs-estados {
+                gap: 8px;
+            }
+
+            .tab-estado {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+
+            .tab-count {
+                font-size: 0.8em;
+                padding: 2px 8px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tabs-container-wrapper {
+                margin: 0 -15px;
+                padding: 0 15px;
+            }
+
+            .tabs-estados {
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE/Edge */
+                gap: 8px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .tabs-estados::-webkit-scrollbar {
+                display: none; /* Chrome/Safari */
+            }
+
+            .tab-estado {
+                flex: 0 0 auto;
+                min-width: 140px;
+                padding: 12px 15px;
+                font-size: 0.95em;
+            }
+
+            .tab-estado span:first-child {
+                display: block;
+                margin-bottom: 3px;
+            }
+
+            .tab-count {
+                display: block;
+                margin-left: 0;
+                margin-top: 5px;
+            }
+
+            .tab-nav-btn {
+                display: block;
+            }
+
+            /* Animación de entrada */
+            .tab-estado {
+                animation: slideIn 0.3s ease;
+            }
+
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab-estado {
+                min-width: 120px;
+                padding: 10px 12px;
+                font-size: 0.85em;
+            }
+
+            .tab-count {
+                font-size: 0.75em;
+                padding: 2px 6px;
+            }
+
+            .tab-nav-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 1em;
+            }
+        }
     </style>
 </head>
 
@@ -522,22 +677,40 @@ if (!isset($_SESSION['usuarioingresando'])) {
             <?php endif; ?>
 
             <!-- Tabs de Estados -->
-            <div class="tabs-estados">
-                <div class="tab-estado pendiente active" data-estado="1" onclick="cambiarEstado(1)">
-                    <span>Pendientes</span>
-                    <span class="tab-count" id="count-pendiente">0</span>
+            <div class="tabs-container-wrapper">
+                <button class="tab-nav-btn prev" onclick="scrollTabs('prev')" id="prevBtn">
+                    <ion-icon name="chevron-back-outline"></ion-icon>
+                </button>
+                <button class="tab-nav-btn next" onclick="scrollTabs('next')" id="nextBtn">
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                </button>
+                
+                <div class="tabs-estados" id="tabsEstados">
+                    <div class="tab-estado pendiente active" data-estado="1" onclick="cambiarEstado(1)">
+                        <span>Pendientes</span>
+                        <span class="tab-count" id="count-pendiente">0</span>
+                    </div>
+                    <div class="tab-estado progreso" data-estado="2" onclick="cambiarEstado(2)">
+                        <span>En Progreso</span>
+                        <span class="tab-count" id="count-progreso">0</span>
+                    </div>
+                    <div class="tab-estado validacion" data-estado="3" onclick="cambiarEstado(3)">
+                        <span>En Validación</span>
+                        <span class="tab-count" id="count-validacion">0</span>
+                    </div>
+                    <div class="tab-estado finalizado" data-estado="4" onclick="cambiarEstado(4)">
+                        <span>Finalizados</span>
+                        <span class="tab-count" id="count-finalizado">0</span>
+                    </div>
                 </div>
-                <div class="tab-estado progreso" data-estado="2" onclick="cambiarEstado(2)">
-                    <span>En Progreso</span>
-                    <span class="tab-count" id="count-progreso">0</span>
-                </div>
-                <div class="tab-estado validacion" data-estado="3" onclick="cambiarEstado(3)">
-                    <span>En Validación</span>
-                    <span class="tab-count" id="count-validacion">0</span>
-                </div>
-                <div class="tab-estado finalizado" data-estado="4" onclick="cambiarEstado(4)">
-                    <span>Finalizados</span>
-                    <span class="tab-count" id="count-finalizado">0</span>
+                
+                <div class="scroll-indicator">
+                    <div class="scroll-dots">
+                        <span class="scroll-dot active" data-index="0"></span>
+                        <span class="scroll-dot" data-index="1"></span>
+                        <span class="scroll-dot" data-index="2"></span>
+                        <span class="scroll-dot" data-index="3"></span>
+                    </div>
                 </div>
             </div>
 
@@ -635,6 +808,9 @@ if (!isset($_SESSION['usuarioingresando'])) {
             // Actualizar tabs activos
             $('.tab-estado').removeClass('active');
             $(`.tab-estado[data-estado="${estado}"]`).addClass('active');
+            
+            // Hacer scroll al tab activo en móvil
+            scrollToActiveTab();
             
             renderizarTickets();
         }
@@ -770,6 +946,85 @@ if (!isset($_SESSION['usuarioingresando'])) {
         $('#filterPrioridad').on('change', function() {
             aplicarFiltros();
         });
+
+        // ==================== FUNCIONES DE SCROLL PARA TABS RESPONSIVE ====================
+        
+        function scrollTabs(direction) {
+            const tabsContainer = document.getElementById('tabsEstados');
+            const scrollAmount = 150; // Cantidad de scroll por clic
+            
+            if (direction === 'prev') {
+                tabsContainer.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
+            } else {
+                tabsContainer.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+            
+            // Actualizar botones y dots después del scroll
+            setTimeout(updateScrollButtons, 300);
+        }
+
+        function updateScrollButtons() {
+            const tabsContainer = document.getElementById('tabsEstados');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (!tabsContainer || !prevBtn || !nextBtn) return;
+            
+            const scrollLeft = tabsContainer.scrollLeft;
+            const maxScroll = tabsContainer.scrollWidth - tabsContainer.clientWidth;
+            
+            // Deshabilitar botón prev si está al inicio
+            if (scrollLeft <= 0) {
+                prevBtn.disabled = true;
+                prevBtn.style.opacity = '0.3';
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.style.opacity = '1';
+            }
+            
+            // Deshabilitar botón next si está al final
+            if (scrollLeft >= maxScroll - 5) {
+                nextBtn.disabled = true;
+                nextBtn.style.opacity = '0.3';
+            } else {
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = '1';
+            }
+        }
+
+        // Inicializar scroll buttons y dots
+        $(document).ready(function() {
+            const tabsContainer = document.getElementById('tabsEstados');
+            
+            if (tabsContainer) {
+                // Actualizar botones al cargar
+                updateScrollButtons();
+                
+                // Actualizar botones al hacer scroll
+                tabsContainer.addEventListener('scroll', updateScrollButtons);
+                
+                // Actualizar al cambiar tamaño de ventana
+                window.addEventListener('resize', updateScrollButtons);
+            }
+        });
+
+        // Hacer scroll al tab activo cuando se cambia de estado
+        function scrollToActiveTab() {
+            const activeTab = document.querySelector('.tab-estado.active');
+            if (activeTab && window.innerWidth <= 768) {
+                activeTab.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'center'
+                });
+            }
+        }
     </script>
 
     <script src="../../assets/js/main.js"></script>

@@ -489,13 +489,16 @@ if (!isset($_SESSION['usuarioingresando'])) {
         <div class="usuarios-container">
             <div class="header-section">
                 <h2 class="section-title">Máquinas</h2>
-                <div style="display: flex; gap: 10px;">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
                         <button onclick="abrirEscanerQR()" class="btn-new" style="background: linear-gradient(90deg, #2196F3, #0D47A1) !important;">
                             <ion-icon name="qr-code-outline"></ion-icon> Buscar por QR
                         </button>
                     <?php endif; ?>
                     <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
+                        <a href="exportar_completo_simple.php" class="btn-new" style="background: linear-gradient(90deg, #28a745, #1e7e34) !important;" title="Exportar reporte completo con mantenimientos, tickets y estadísticas">
+                            <ion-icon name="download-outline"></ion-icon> Exportar Completo
+                        </a>
                         <a href="crear_maquinas.php" class="btn-new">
                             <ion-icon name="add-circle-outline"></ion-icon> Nueva Máquina
                         </a>

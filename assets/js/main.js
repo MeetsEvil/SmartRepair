@@ -1,13 +1,40 @@
-// Menu Toggle (Mantenido)
+// Menu Toggle con Overlay para Móvil
 const toggle = document.querySelector(".toggle");
 const navigation = document.querySelector(".navigation");
 const main = document.querySelector(".main");
+
+// Crear overlay para móvil
+let sidebarOverlay = document.querySelector(".sidebar-overlay");
+if (!sidebarOverlay) {
+    sidebarOverlay = document.createElement("div");
+    sidebarOverlay.className = "sidebar-overlay";
+    document.body.appendChild(sidebarOverlay);
+}
 
 if (toggle && navigation && main) {
     toggle.onclick = function () {
         navigation.classList.toggle("active");
         main.classList.toggle("active");
+        
+        // Activar overlay en móvil
+        if (window.innerWidth <= 768) {
+            sidebarOverlay.classList.toggle("active");
+        }
     };
+    
+    // Cerrar sidebar al hacer clic en el overlay
+    sidebarOverlay.onclick = function () {
+        navigation.classList.remove("active");
+        main.classList.remove("active");
+        sidebarOverlay.classList.remove("active");
+    };
+    
+    // Manejar cambio de tamaño de ventana
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) {
+            sidebarOverlay.classList.remove("active");
+        }
+    });
 }
 
 
