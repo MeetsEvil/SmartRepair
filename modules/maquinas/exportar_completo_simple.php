@@ -116,7 +116,7 @@ echo "\xEF\xBB\xBF"; // UTF-8 BOM
                             l.nombre_linea,
                             CONCAT(u.nombre, ' ', u.apellido) as creado_por,
                             (SELECT COUNT(*) FROM mantenimientos mt WHERE mt.id_maquina = m.id_maquina) as total_mantenimientos,
-                            (SELECT COUNT(*) FROM tickets t WHERE t.id_maquina = m.id_maquina) as total_tickets,
+                            (SELECT COUNT(*) FROM tickets t WHERE t.id_maquina = m.id_maquina AND t.visible=1) as total_tickets,
                             (SELECT COUNT(*) FROM tickets t WHERE t.id_maquina = m.id_maquina AND t.id_estado IN (1,2)) as tickets_activos
                         FROM maquinas m
                         INNER JOIN plantas p ON m.id_planta = p.id_planta
@@ -168,7 +168,7 @@ echo "\xEF\xBB\xBF"; // UTF-8 BOM
             <th>Técnico Responsable</th>
             <th>Actividades Realizadas</th>
             <th>Repuestos Utilizados</th>
-            <th>Costo</th>
+            <!-- <th>Costo</th> -->
             <th>Observaciones</th>
         </tr>
     </thead>
@@ -201,7 +201,7 @@ echo "\xEF\xBB\xBF"; // UTF-8 BOM
             echo "<td>" . htmlspecialchars($mant['tecnico']) . "</td>";
             echo "<td>" . htmlspecialchars($mant['actividades_realizadas']) . "</td>";
             echo "<td>" . htmlspecialchars($mant['repuestos_utilizados']) . "</td>";
-            echo "<td>" . (isset($mant['costo']) && $mant['costo'] ? '$' . number_format($mant['costo'], 2) : 'N/A') . "</td>";
+            // echo "<td>" . (isset($mant['costo']) && $mant['costo'] ? '$' . number_format($mant['costo'], 2) : 'N/A') . "</td>";
             echo "<td>" . htmlspecialchars($mant['observaciones'] ?? '') . "</td>";
             echo "</tr>";
             }
@@ -316,7 +316,7 @@ echo "\xEF\xBB\xBF"; // UTF-8 BOM
                             COUNT(DISTINCT CASE WHEN tm.nombre_tipo = 'Correctivo' THEN mt.id_mantenimiento END) as mant_correctivos,
                             COUNT(DISTINCT t.id_ticket) as total_tickets,
                             COUNT(DISTINCT CASE WHEN t.id_estado IN (1,2) THEN t.id_ticket END) as tickets_activos,
-                            COUNT(DISTINCT CASE WHEN t.id_estado = 3 THEN t.id_ticket END) as tickets_completados,
+                            COUNT(DISTINCT CASE WHEN t.id_estado = 4 THEN t.id_ticket END) as tickets_completados,
                             COUNT(DISTINCT CASE WHEN t.id_prioridad = 1 THEN t.id_ticket END) as tickets_alta_prioridad,
                             MAX(t.fecha_creacion) as ultima_falla,
                             MAX(mt.fecha_mantenimiento) as ultimo_mantenimiento
@@ -372,7 +372,7 @@ echo "\xEF\xBB\xBF"; // UTF-8 BOM
         $total_mantenimientos = mysqli_num_rows(mysqli_query($conexion, "SELECT * FROM mantenimientos"));
         $total_tickets = mysqli_num_rows(mysqli_query($conexion, "SELECT * FROM tickets WHERE visible = 1"));
         $tickets_activos = mysqli_num_rows(mysqli_query($conexion, "SELECT * FROM tickets WHERE id_estado IN (1,2) AND visible = 1"));
-        $tickets_completados = mysqli_num_rows(mysqli_query($conexion, "SELECT * FROM tickets WHERE id_estado = 3 AND visible = 1"));
+        $tickets_completados = mysqli_num_rows(mysqli_query($conexion, "SELECT * FROM tickets WHERE id_estado = 4 AND visible = 1"));
         ?>
         <tr>
             <td><strong>Total de Máquinas</strong></td>
@@ -382,10 +382,10 @@ echo "\xEF\xBB\xBF"; // UTF-8 BOM
             <td><strong>Máquinas Activas</strong></td>
             <td style="text-align: center;"><?php echo $maquinas_activas; ?></td>
         </tr>
-        <tr>
+        <!-- <tr>
             <td><strong>Máquinas en Mantenimiento</strong></td>
             <td style="text-align: center;"><?php echo $maquinas_mantenimiento; ?></td>
-        </tr>
+        </tr> -->
         <tr>
             <td><strong>Total Mantenimientos Realizados</strong></td>
             <td style="text-align: center;"><?php echo $total_mantenimientos; ?></td>
