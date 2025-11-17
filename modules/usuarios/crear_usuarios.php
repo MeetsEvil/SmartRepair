@@ -279,7 +279,8 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
 
 <body>
     <?php
-    $currentPage = basename($_SERVER['REQUEST_URI']);
+    // Obtiene el nombre del archivo de la URL sin parámetros
+    $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
     $rol = $_SESSION['rol'];
     ?>
 
@@ -290,6 +291,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                     <img src="../../assets/images/logo_mattel.png" alt="logo">
                 </li>
 
+                <!-- DASHBOARD -->
                 <li class="<?php echo ($currentPage == 'dashboard.php') ? 'active' : ''; ?>">
                     <a href="../main/dashboard.php" data-tooltip="Inicio">
                         <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
@@ -297,7 +299,8 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                     </a>
                 </li>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
+                    <!-- MÁQUINAS -->
                     <?php $maquinasPages = ['index_maquinas.php', 'crear_maquinas.php', 'editar_maquinas.php', 'ver_maquinas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $maquinasPages) ? 'active' : ''; ?>">
                         <a href="../maquinas/index_maquinas.php" data-tooltip="Máquinas">
@@ -305,7 +308,10 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                             <span class="title">Máquinas</span>
                         </a>
                     </li>
+                <?php endif; ?>
 
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico') : ?>
+                    <!-- LÍNEAS -->
                     <?php $lineasPages = ['index_lineas.php', 'crear_lineas.php', 'editar_lineas.php', 'ver_lineas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $lineasPages) ? 'active' : ''; ?>">
                         <a href="../lineas/index_lineas.php" data-tooltip="Líneas">
@@ -315,7 +321,8 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                     </li>
                 <?php endif; ?>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico') : ?>
+                    <!-- MANTENIMIENTO -->
                     <?php $mantenimientoPages = ['index_mantenimiento.php', 'crear_mantenimiento.php', 'editar_mantenimiento.php', 'ver_mantenimiento.php']; ?>
                     <li class="<?php echo in_array($currentPage, $mantenimientoPages) ? 'active' : ''; ?>">
                         <a href="../mantenimiento/index_mantenimiento.php" data-tooltip="Mantenimiento">
@@ -324,6 +331,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                         </a>
                     </li>
 
+                    <!-- TICKETS -->
                     <?php $ticketsPages = ['index_tickets.php', 'crear_tickets.php', 'editar_tickets.php', 'ver_tickets.php']; ?>
                     <li class="<?php echo in_array($currentPage, $ticketsPages) ? 'active' : ''; ?>">
                         <a href="../tickets/index_tickets.php" data-tooltip="Tickets">
@@ -334,6 +342,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                 <?php endif; ?>
 
                 <?php if ($rol == 'Administrador'): ?>
+                    <!-- USUARIOS -->
                     <?php $usuariosPages = ['index_usuarios.php', 'crear_usuarios.php', 'editar_usuarios.php', 'ver_usuarios.php']; ?>
                     <li class="<?php echo in_array($currentPage, $usuariosPages) ? 'active' : ''; ?>">
                         <a href="../usuarios/index_usuarios.php" data-tooltip="Usuarios">
@@ -343,6 +352,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                     </li>
                 <?php endif; ?>
 
+                <!-- CERRAR SESIÓN -->
                 <li>
                     <a href="#" onclick="showLogoutModal()" data-tooltip="Cerrar Sesión">
                         <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
@@ -351,6 +361,7 @@ $plantas = mysqli_query($conexion, "SELECT * FROM plantas WHERE estado = 'Activa
                 </li>
             </ul>
         </div>
+
     </div>
 
     <div class="main">
