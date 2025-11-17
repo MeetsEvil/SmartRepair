@@ -268,11 +268,10 @@ if (!isset($_SESSION['usuarioingresando'])) {
 
 <body>
     <?php
-    // Obtiene el nombre del archivo de la URL
-    $currentPage = basename($_SERVER['REQUEST_URI']);
+    // Obtiene el nombre del archivo de la URL sin parámetros
+    $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
     $rol = $_SESSION['rol'];
     ?>
-
 
     <div class="container">
         <div class="navigation">
@@ -289,7 +288,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     </a>
                 </li>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
                     <!-- MÁQUINAS -->
                     <?php $maquinasPages = ['index_maquinas.php', 'crear_maquinas.php', 'editar_maquinas.php', 'ver_maquinas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $maquinasPages) ? 'active' : ''; ?>">
@@ -298,7 +297,9 @@ if (!isset($_SESSION['usuarioingresando'])) {
                             <span class="title">Máquinas</span>
                         </a>
                     </li>
+                <?php endif; ?>
 
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico') : ?>
                     <!-- LÍNEAS -->
                     <?php $lineasPages = ['index_lineas.php', 'crear_lineas.php', 'editar_lineas.php', 'ver_lineas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $lineasPages) ? 'active' : ''; ?>">
@@ -309,7 +310,7 @@ if (!isset($_SESSION['usuarioingresando'])) {
                     </li>
                 <?php endif; ?>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico') : ?>
                     <!-- MANTENIMIENTO -->
                     <?php $mantenimientoPages = ['index_mantenimiento.php', 'crear_mantenimiento.php', 'editar_mantenimiento.php', 'ver_mantenimiento.php']; ?>
                     <li class="<?php echo in_array($currentPage, $mantenimientoPages) ? 'active' : ''; ?>">

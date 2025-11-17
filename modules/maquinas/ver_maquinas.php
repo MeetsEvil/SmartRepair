@@ -424,7 +424,8 @@ mysqli_close($conexion);
 
 <body>
     <?php
-    $currentPage = basename($_SERVER['REQUEST_URI']);
+    // Obtiene el nombre del archivo de la URL sin parámetros
+    $currentPage = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
     $rol = $_SESSION['rol'];
     ?>
 
@@ -443,7 +444,7 @@ mysqli_close($conexion);
                     </a>
                 </li>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol = "Operario"): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico' || $rol == 'Operario'): ?>
                     <!-- MÁQUINAS -->
                     <?php $maquinasPages = ['index_maquinas.php', 'crear_maquinas.php', 'editar_maquinas.php', 'ver_maquinas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $maquinasPages) ? 'active' : ''; ?>">
@@ -454,8 +455,7 @@ mysqli_close($conexion);
                     </li>
                 <?php endif; ?>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
-
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico') : ?>
                     <!-- LÍNEAS -->
                     <?php $lineasPages = ['index_lineas.php', 'crear_lineas.php', 'editar_lineas.php', 'ver_lineas.php']; ?>
                     <li class="<?php echo in_array($currentPage, $lineasPages) ? 'active' : ''; ?>">
@@ -466,7 +466,7 @@ mysqli_close($conexion);
                     </li>
                 <?php endif; ?>
 
-                <?php if ($rol == 'Administrador' || $rol == 'Técnico'): ?>
+                <?php if ($rol == 'Administrador' || $rol == 'Técnico') : ?>
                     <!-- MANTENIMIENTO -->
                     <?php $mantenimientoPages = ['index_mantenimiento.php', 'crear_mantenimiento.php', 'editar_mantenimiento.php', 'ver_mantenimiento.php']; ?>
                     <li class="<?php echo in_array($currentPage, $mantenimientoPages) ? 'active' : ''; ?>">
@@ -695,6 +695,11 @@ mysqli_close($conexion);
                                 <div class="history-date">
                                     <?php echo date('d/m/Y H:i', strtotime($mant['fecha_mantenimiento'])); ?> - 
                                     <span style="color: #666;"><?php echo $mant['nombre_tipo']; ?></span>
+                                    <a href="../mantenimiento/ver_mantenimiento.php?id=<?php echo $mant['id_mantenimiento']; ?>" 
+                                       style="float: right; color: #2196F3; font-size: 1.8em; margin-top: 15px; transition: all 0.3s ease;"
+                                       title="Ver detalle">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </a>
                                 </div>
                                 <div class="history-info">
                                     <strong>Técnico:</strong> <?php echo htmlspecialchars($mant['tecnico']); ?>
@@ -727,6 +732,11 @@ mysqli_close($conexion);
                                     <span class="badge-prioridad" style="background: <?php echo $ticket['color_prioridad']; ?>; padding: 3px 10px; font-size: 0.8em;">
                                         <?php echo $ticket['nombre_prioridad']; ?>
                                     </span>
+                                    <a href="../tickets/ver_tickets.php?id=<?php echo $ticket['id_ticket']; ?>" 
+                                       style="float: right; color: #2196F3; font-size: 1.8em; margin-top: 15px; transition: all 0.3s ease;"
+                                       title="Ver detalle">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </a>
                                 </div>
                                 <div class="history-info">
                                     <strong>Estado:</strong> <?php echo $ticket['nombre_estado']; ?> | 
